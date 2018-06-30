@@ -1,95 +1,130 @@
 <template>
-  <div class="login-wrapper">
-    <div class="login">
-      <img class="logo" src="/static/images/logo.png" alt="">
-      <h2 class="title">资产管理系统</h2>
-      <el-form ref="form" :model="form" label-width="">
-        <el-form-item label="">
-          <el-input type="text" v-model="form.username" placeholder="用户名"></el-input>
-        </el-form-item>
-        <el-form-item label="">
-          <el-input type="password" v-model="form.password" placeholder="密码" @keyup.native.enter="login"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="login">登录</el-button>
-        </el-form-item>
-      </el-form>
-    </div>
-    <div class="bg"></div>
+  <div class="login-container">
+    <el-form class="login-form">
+      <div class="image-center">
+        <img src="/static/images/book.png" alt="图书销售管理系统" />
+      </div>
+
+      <div class="sign-text">
+        <span>{{ title }}</span>
+      </div>
+
+      <el-form-item>
+        <span>请输入用户名：</span>
+        <el-input name="username" type="text" v-model="loginForm.username" placeholder="用户名" autoComplete="on" clearable/>
+      </el-form-item>
+
+      <el-form-item>
+        <span>请输入密码：</span>
+        <el-input name="password" type="password" @key.enter.native="handleLogin" placeholder="密码" v-model="loginForm.password" autoComplete="on" clearable />
+      </el-form-item>
+
+      <el-button type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin" :loading="loading">
+        登录
+      </el-button>
+    </el-form>
   </div>
 </template>
 
 <script>
-  export default {
-    data () {
-      return {
-        form: {
-          username: '',
-          password: ''
+export default {
+  name: 'login',
+  data () {
+    return {
+      title: '图 书 销 售 管 理 系 统',
+      loading: false,
+      loginForm: {
+        username: null,
+        password: null
+      }
+    }
+  },
+  methods: {
+    handleLogin() {
+      this.loading=true;
+      var that=this;
+      setTimeout(function(){
+        if(that.loginForm.username === "admin" && that.loginForm.password==="123456"){
+          that.loading=false;
+          console.log("登陆成功")
         }
-      };
-    },
-    methods: {
-      login() {
-        this.$http.post('/api/user/login', {
-          username: this.form.username,
-          password: this.form.password
-        }).then ((res) => {
-          if (res.status === 200 && res.data.status !== 404) {
-            localStorage.setItem('user', JSON.stringify(res.data[0]))
-            this.$router.push({ path: '/dashboard' })
-            this.$message({
-              type: 'success',
-              message: '登录成功，欢迎您！'
-            })
-          } else {
-            this.$message({
-              type: 'error',
-              message: '登录失败，请检查用户名或密码！'
-            })
-          }
-        }).catch((err) => {
-          console.log(err)
-        })
-      },
+      }, 500);
     }
   }
+}
 </script>
 
-<style scoped>
-  .login {
-    width: 220px;
-    padding: 50px;
-    border-radius: 10px;
-    background: #fff;
+<style rel="stylesheet/scss" lang="scss">
+  $bg: rgba(0,0,0,0.05);
+  $input_text: #000;
+  $dark_gray: 889aa4;
+  $light_gray: #eee;
+
+  .login-container {
     position: fixed;
-    top: 50%;
-    left: 50%;
-    text-align: center;
-    margin-left: -160px;
-    margin-top: -220px;
-    box-shadow: 2px 8px 31px 0 #dbdbdb;
-  }
-  .title {
-    text-align: center;
-    margin-bottom: 40px;
-  }
-  .el-button {
-    width: 100%;
-  }
-  .logo {
-    width: 80px;
-    height: 80px;
-  }
-  .bg {
-    background: linear-gradient(to bottom, #e9f2f9, #f3eee8);
-    min-height: 100%;
-    min-width: 1024px;
-    width: 100%;
-    height: auto;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: -1;
+    height: 100%;
+    width : 100%;
+    background-size: cover;
+
+    .login-form{
+      position: absolute;
+      border-radius: 10px;
+      left: 0;
+      right: 0;
+      width: 400px;
+      background-color: $bg;
+      padding: 35px 35px 15px 35px;
+      margin: 120px auto;
+    }
+
+    .el-form-item {
+      border: 1px solid rgba(211, 55, 55, 0.1);
+      background: $bg;
+      border-radius: 5px;
+      color: #454545;
+      span{
+        display: block;
+        width: 100px;
+        font-size: 10px;
+        line-height: 2em;
+        text-align: left;
+        padding-left: 5px;
+      }
+    }
+
+    .el-input {
+      display: block;
+      height: 47px;
+      width: 100%;
+    }
+
+    .image-center {
+      clear: right;
+      text-align: center;
+      img{
+        width: 100px;
+        height: 100px;
+      }
+    }
+
+    .err-font{
+      text-align: left;
+      color: rgb(255, 80, 74);
+      font-size: 12px;
+      line-height: 1.5;
+      margin-top: -22px;
+      margin-bottom: 0px;
+      position: absolute;
+    }
+
+    .sign-text{
+      color: #777;
+      display: block;
+      font-size: 15px;
+      font-style: normal;
+      position: relative;
+      text-align: center;
+      margin-bottom: 10px;
+    }
   }
 </style>
