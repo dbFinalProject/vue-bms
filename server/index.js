@@ -62,11 +62,11 @@ app.all('*', (req, res, next) => {
 *   /api/customer 用户部分路由
 */
 app.use('/api/user', userApi)
-app.use('/api/manager', managerApi)
+//app.use('/api/manager', managerApi)
 
 // 访问静态资源文件，这里是访问所有dist目录下的静态资源文件
 // ...
 
 // 监听3000端口
 app.listen(3000)
-console.log('success listen......')
+console.log('The server has successfully opened......')

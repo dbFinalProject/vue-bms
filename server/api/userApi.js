@@ -21,15 +21,20 @@ var jsonWrite = function (res, ret) {
 
 // 增加用户接口
 router.post('/login', (req, res) => {
-  var conn = mysql.createConnection(models.mysql)
-  var sql = $sql.user.add
+  //var conn = mysql.createConnection(models.mysql)
+  var sql = $sql.queryAdmin
   var params = req.body
-  conn.query(sql, [params.username, params.age], function (err, result) {
+  conn.query(sql, [params.username], function (err, result) {
     if (err) {
       console.log(err)
     }
     if (result) {
-      jsonWrite(res, result)
+      if(result[0].userPassword === params.password)
+        console.log(result[0].userName)
+        jsonWrite(res, result)
+      else{
+        
+      }
     }
   })
 })

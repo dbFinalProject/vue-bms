@@ -40,15 +40,35 @@ export default {
     }
   },
   methods: {
-    handleLogin() {
-      this.loading=true;
-      var that=this;
-      setTimeout(function(){
-        if(that.loginForm.username === "admin" && that.loginForm.password==="123456"){
-          that.loading=false;
-          console.log("登陆成功")
+    handleLogin () {
+      this.loading = true
+      this.$http.post('/api/user/login', {
+        username: this.loginForm.username,
+        password: this.loginForm.password
+      }).then((res)=>{
+        this.loading = false
+        if(res.status === 200 && res.data.status !== 400) {
+          this.$router.push({path: '/dashboard'})
+          this.$message({
+            type: 'success',
+            message: '登陆成功'
+          })
+        } else {
+          this.$message({
+            type: 'error',
+            message: '登陆失败，请检查用户名或密码！'
+          })
         }
-      }, 500);
+      }).catch((err) => {
+        console.log(err)
+      })
+      /*var that = this
+      setTimeout(function () {
+        if (that.loginForm.username === 'admin' && that.loginForm.password === '123456') {
+          that.loading = false
+          console.log('登陆成功')
+        }
+      }, 500)*/
     }
   }
 }
