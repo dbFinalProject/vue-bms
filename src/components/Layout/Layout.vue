@@ -4,6 +4,7 @@
       :default-active="activeIndex"
       class="el-menu-demo"
       mode="horizontal"
+      router
       @select="handleSelect"
       background-color="#545c64"
       text-color="#fff"
@@ -13,14 +14,17 @@
       <el-menu-item index="3">购买图书</el-menu-item>
       <el-menu-item index="4">营业额</el-menu-item>
     </el-menu>
-    <router-view></router-view>
   </div>
 </template>
 <script>
 export default {
   data () {
     return {
-      activeIndex: '1',
+    }
+  },
+  computed:{
+    activeIndex(){
+      return this.$route.path.replace('/','')
     }
   },
   methods: {

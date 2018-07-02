@@ -6,8 +6,8 @@ var $sql = require('../sqlMap')
 var conn = mysql.createConnection(models.mysql)
 
 // 连接数据库
-
 conn.connect()
+
 var jsonWrite = function (res, ret) {
   if (typeof ret === 'undefined') {
     res.json({
@@ -19,22 +19,20 @@ var jsonWrite = function (res, ret) {
   }
 }
 
-// 增加用户接口
+// 用户登陆
 router.post('/login', (req, res) => {
-  //var conn = mysql.createConnection(models.mysql)
   var sql = $sql.queryAdmin
   var params = req.body
-  conn.query(sql, [params.username], function (err, result) {
+  conn.query(sql, [params.username, params.password], function (err, result) {
+    console.log(result.length)
     if (err) {
       console.log(err)
     }
-    if (result) {
-      if(result[0].userPassword === params.password)
-        console.log(result[0].userName)
-        jsonWrite(res, result)
-      else{
-        
-      }
+    if (result.length) {
+      jsonWrite(res, result)
+      // res.redirect('/');
+    } else {
+      return res.json({ status: 404, message: '登录失败' })
     }
   })
 })
