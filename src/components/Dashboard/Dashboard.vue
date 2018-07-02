@@ -1,17 +1,18 @@
 <template>
   <div>
     <el-menu
-      :default-active="activeIndex"
+      :default-active="this.$route.path.split('/')[2] ? this.$route.path.split('/')[2] : 'CustomerService'"
       class="el-menu-demo"
       mode="horizontal"
       @select="handleSelect"
       background-color="#545c64"
       text-color="#fff"
-      active-text-color="#ffd04b">
-      <el-menu-item index="1">用户服务</el-menu-item>
-      <el-menu-item index="2">查看库存</el-menu-item>
-      <el-menu-item index="3">购买图书</el-menu-item>
-      <el-menu-item index="4">营业额</el-menu-item>
+      active-text-color="#ffd04b"
+      router>
+      <el-menu-item index="CustomerService">用户服务</el-menu-item>
+      <el-menu-item index="GetOwnBook">查看库存</el-menu-item>
+      <el-menu-item index="PurchaseBook">购买图书</el-menu-item>
+      <el-menu-item index="SalesStatistics">营业额</el-menu-item>
     </el-menu>
     <router-view></router-view>
   </div>
@@ -20,12 +21,15 @@
 export default {
   data () {
     return {
-      activeIndex: '1',
     }
+  },
+  created() {
+  
   },
   methods: {
     handleSelect (key, keyPath) {
-      console.log(key, keyPath)
+      console.log(this.$route.path);
+      this.$router.push({path: '/Dashboard/'+key})
     }
   }
 }

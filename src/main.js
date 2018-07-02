@@ -11,6 +11,28 @@ Vue.use(axios)
 Vue.config.productionTip = false
 Vue.prototype.$http = axios
 
+Vue.prototype.setCookie = (username, password, expiredays) => {
+	var exdate = new Date();
+	exdate.setDate(exdate.getDate() + expiredays);
+	document.cookie = username + "=" + escape(value) + ((expiredays == null) ? "" : ";expires=" + exdate.toGMTString());
+}
+
+Vue.prototype.getCookie = (name) => {
+  var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+  if (arr = document.cookie.match(reg))
+    return (arr[2]);
+  else
+    return null;
+}
+
+Vue.prototype.delCookie =(name) => {
+  var exp = new Date();
+  exp.setTime(exp.getTime() - 1);
+  var cval = getCookie(name);
+  if (cval != null)
+    document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString();
+}
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

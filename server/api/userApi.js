@@ -30,6 +30,10 @@ router.post('/login', (req, res) => {
     }
     if (result.length) {
       jsonWrite(res, result)
+      req.session.user = {
+        username: params.username,
+        password: params.password
+      }
       // res.redirect('/');
     } else {
       return res.json({ status: 404, message: '登录失败' })
