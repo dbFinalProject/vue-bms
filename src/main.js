@@ -6,31 +6,36 @@ import router from './router'
 import axios from 'axios'
 import Element from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+//import {setCookie, getCookie, delCookie} from 'util/util'
+//import _,{fetch, post, patch, put} from './util/http'
+
 Vue.use(Element)
-Vue.use(axios)
 Vue.config.productionTip = false
 Vue.prototype.$http = axios
 
 Vue.prototype.setCookie = (username, password, expiredays) => {
+  //document.cookie = username+"="+escape(password)
 	var exdate = new Date();
 	exdate.setDate(exdate.getDate() + expiredays);
-	document.cookie = username + "=" + escape(value) + ((expiredays == null) ? "" : ";expires=" + exdate.toGMTString());
+	document.cookie = username + "=" + escape(password) + ((expiredays == null) ? "" : ";expires=" + exdate.toGMTString());
 }
 
-Vue.prototype.getCookie = (name) => {
-  var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+Vue.prototype.getCookie = (username) => {
+  //return document.cookie
+  var arr, reg = new RegExp("(^| )" + username + "=([^;]*)(;|$)");
   if (arr = document.cookie.match(reg))
     return (arr[2]);
   else
     return null;
-}
+} 
 
-Vue.prototype.delCookie =(name) => {
+Vue.prototype.delCookie = (username) => {
+  //document.cookie = null;
   var exp = new Date();
   exp.setTime(exp.getTime() - 1);
-  var cval = getCookie(name);
-  if (cval != null)
-    document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString();
+  //var cval = getCookie(username);
+  //if (cval != null)
+  document.cookie = username + "=" + null + ";expires=" + exp.toGMTString();
 }
 
 /* eslint-disable no-new */

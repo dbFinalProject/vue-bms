@@ -16,10 +16,12 @@
   "dependencies": {
     "axios": "^0.18.0",
     "body-parser": "^1.18.3",
+    "cookie-parser": "^1.4.3",
     "element-ui": "^2.4.2",
     "express": "^4.16.3",
     "express-session": "^1.15.6",
     "mysql": "^2.15.0",
+    "session-file-store": "^1.2.0",
     "vue": "^2.5.2",
     "vue-resource": "^1.5.1",
     "vue-router": "^3.0.1"

@@ -39,6 +39,11 @@ export default {
       }
     }
   },
+  created () {
+    if(this.getCookie("admin") != null){
+      this.$router.replace({path: '/dashboard'})
+    }
+  },
   methods: {
     handleLogin () {
       this.loading = true
@@ -48,7 +53,9 @@ export default {
       }).then((res)=>{
         this.loading = false
         if(res.status === 200 && res.data.status !== 404) {
+          let expireDays = 1000*60*60
           this.$router.push({path: '/dashboard'})
+          this.setCookie(this.loginForm.username,this.loginForm.password,expireDays);
           this.$message({
             type: 'success',
             message: '登陆成功'
