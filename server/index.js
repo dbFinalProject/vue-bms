@@ -2,6 +2,7 @@
 
 // 引入编写好的api
 const userApi = require('./api/userApi')
+const bookApi = require('./api/bookApi')
 const managerApi = require('./api/managerApi')
 var cookieParser = require('cookie-parser');
 
@@ -66,6 +67,7 @@ app.all('*', (req, res, next) => {
 *   /api/customer 用户部分路由
 */
 app.use('/api/user', userApi)
+app.use('/api/book', bookApi)
 //app.use('/api/manager', managerApi)
 
 // 访问静态资源文件，这里是访问所有dist目录下的静态资源文件

@@ -1,10 +1,141 @@
 <!-- 顾客服务页面 -->
 <template>
-	<div>CustomerService</div>
-	
+  <div>
+    <el-table
+      :data="tableData"
+      style="width: 100%;height: 100%"
+      stripe
+      >
+      <el-table-column
+        label="编号"
+        width="180"
+        align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.bookId }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="出版日期"
+        width="180"
+        align="center">
+        <template slot-scope="scope">
+          <i class="el-icon-time"></i>
+          <span style="margin-left: 10px">{{ scope.row.bookDate }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="书名"
+        width="180"
+        align="center">
+        <template slot-scope="scope">
+          <el-popover trigger="hover" placement="top">
+            <p>书名: {{ scope.row.bookName }}</p>
+            <p>出版社: {{ scope.row.bookInfo }}</p>
+            <div slot="reference" class="name-wrapper">
+              <el-tag size="medium">{{ scope.row.bookName }}</el-tag>
+            </div>
+          </el-popover>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="库存量"
+        width="180"
+        align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.bookNum }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column 
+        label="操作"
+        align="center">
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="success"
+            @click="handlePurchase(scope.$index, scope.row)">购买</el-button>
+          <el-button
+            size="mini"
+            type="danger"
+            @click="handleReturn(scope.$index, scope.row)">退购</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <el-dialog :title="dialogFormTitle" :visible.sync="dialogFormVisible">
+      <el-form :model="form">
+        <el-form-item label="书本名称" :label-width="formLabelWidth">
+          <el-input v-model="form.bookName" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="数量" :label-width="formLabelWidth">
+          <el-input v-model="form.num" placeholder="请输入购买数量"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancel">取 消</el-button>
+        <el-button type="primary" @click="confirm">确 定</el-button>
+      </div>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
 export default {
+  data() {
+    return {
+      tableData: [],
+      formLabelWidth: '120px',
+      form: {
+        bookId: "",
+        bookName: "",
+        num: ""
+      },
+      dialogFormVisible: false,
+      dialogFormTitle: ""
+    }
+  },
+  created () {
+    this.$http.get('/api/book/getBooks')
+      .then((res)=>{
+        this.tableData = res.data
+      });
+  },
+  methods: {
+    handlePurchase(index, row) {
+      this.dialogFormTitle="购买图书"
+      this.dialogFormVisible=true
+      this.form.bookId=row.bookId
+      this.form.bookName=row.bookName
+      this.form.num=1
+    },
+    handleReturn(index, row) {
+      //console.log(index, row);
+      this.dialogFormTitle="退购图书"
+      this.dialogFormVisible=true
+      this.form.bookId=row.bookId
+      this.form.bookName=row.bookName
+      this.form.num=1
+    },
+    cancel(){
+      this.dialogFormVisible=false
+    },
+    confirm(){
+      var url="";
+      if(this.dialogFormTitle === "购买图书")
+        url="/api/book/purchase"
+      else
+        url="/api/book/return"
+      var that=this;
+      this.$http.post(url, {
+        bookId: this.form.bookId,
+        num: this.form.num
+      }).then((res)=>{
+        that.$http.get('/api/book/getBooks')
+          .then((res)=>{
+            that.tableData = res.data
+            that.dialogFormVisible=false
+          });
+      });
+    }
+  }
 }
 </script>

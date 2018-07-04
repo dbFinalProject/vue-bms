@@ -24,9 +24,9 @@ var jsonWrite = function (res, ret) {
 router.post('/login', (req, res) => {
   var sql = $sql.queryAdmin
   var params = req.body
-  console.log(params)
+  //console.log(params)
   conn.query(sql, [params.username, params.password], function (err, result) {
-    console.log(result)
+    //console.log(result)
     if (err) {
       console.log(err)
     }
