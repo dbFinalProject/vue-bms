@@ -1,2 +1,5 @@
 The server has successfully opened......
-{ bookId: 3, num: 1 }
+{ bookId: 1, count: 1, customerName: '刘亚辉' }
+{ bookId: 1, count: '3', customerName: '刘笑' }
+{ bookId: 1, count: '1', customerName: '刘笑' }
+{ bookId: 1, count: 1, customerName: '刘笑' }

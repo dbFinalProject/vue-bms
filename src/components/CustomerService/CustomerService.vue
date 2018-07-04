@@ -62,12 +62,15 @@
     </el-table>
 
     <el-dialog :title="dialogFormTitle" :visible.sync="dialogFormVisible">
-      <el-form :model="form">
-        <el-form-item label="书本名称" :label-width="formLabelWidth">
+      <el-form :model="form" ref="ruleForm" :rules="rules">
+        <el-form-item label="顾客姓名" :label-width="formLabelWidth" prop="customerName">
+          <el-input v-model="form.customerName" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="书本名称" :label-width="formLabelWidth" prop="bookName">
           <el-input v-model="form.bookName" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="数量" :label-width="formLabelWidth">
-          <el-input v-model="form.num" placeholder="请输入购买数量"></el-input>
+        <el-form-item label="数量" :label-width="formLabelWidth" prop="count">
+          <el-input v-model="form.count" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -84,13 +87,25 @@ export default {
     return {
       tableData: [],
       formLabelWidth: '120px',
+      dialogFormVisible: false,
+      dialogFormTitle: "",
       form: {
         bookId: "",
+        customerName: "",
         bookName: "",
-        num: ""
+        count: ""
       },
-      dialogFormVisible: false,
-      dialogFormTitle: ""
+      rules: {
+        customerName: [
+          {required: true, message: '请输入顾客姓名', trigger: 'blur'}
+        ],
+        bookName: [
+          {required: true, message: '请输入图书名称', trigger: 'blur'}
+        ],
+        count: [
+          {required: true, message: '请输入图书数量', trigger: 'blur'}
+        ]
+      }
     }
   },
   created () {
@@ -105,7 +120,7 @@ export default {
       this.dialogFormVisible=true
       this.form.bookId=row.bookId
       this.form.bookName=row.bookName
-      this.form.num=1
+      this.form.count=1
     },
     handleReturn(index, row) {
       //console.log(index, row);
@@ -113,27 +128,46 @@ export default {
       this.dialogFormVisible=true
       this.form.bookId=row.bookId
       this.form.bookName=row.bookName
-      this.form.num=1
+      this.form.count=1
     },
     cancel(){
       this.dialogFormVisible=false
     },
     confirm(){
-      var url="";
-      if(this.dialogFormTitle === "购买图书")
-        url="/api/book/purchase"
-      else
-        url="/api/book/return"
       var that=this;
-      this.$http.post(url, {
-        bookId: this.form.bookId,
-        num: this.form.num
-      }).then((res)=>{
-        that.$http.get('/api/book/getBooks')
-          .then((res)=>{
-            that.tableData = res.data
-            that.dialogFormVisible=false
+      //检验表单
+      this.$refs["ruleForm"].validate((valid) => {
+        if(valid){
+          //post表单信息，进行销售操作或者退货操作
+          var url="";
+          if(that.dialogFormTitle === "购买图书")
+            url="/api/book/sale"
+          else
+            url="/api/book/return"
+          that.$http.post(url, {
+            bookId: that.form.bookId,
+            count: that.form.count,
+            customerName: that.form.customerName
+          }).then((res)=>{
+            //销售或退货成功之后进行数据更新
+            if(res.status === 200 && res.data.status!=404){
+              that.$http.get('/api/book/getBooks')
+                .then((res)=>{
+                  that.tableData = res.data
+                  that.dialogFormVisible=false
+                  that.$message({
+                    type: 'success',
+                    message: this.dialogFormTitle === "购买图书" ? "购买成功" : "退订成功"
+                  });
+                });
+            }else{
+              that.$message({
+                type: 'error',
+                message: res.data.message
+              });
+            }
           });
+        }
       });
     }
   }
