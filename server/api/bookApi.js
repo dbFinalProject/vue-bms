@@ -3,7 +3,8 @@ var express = require('express')
 var router = express.Router()
 var mysql = require('mysql')
 var $sql = require('../sqlMap')
-
+var url=require('url')
+var querystring=require('querystring')
 var conn = mysql.createConnection(models.mysql)
 
 // 连接数据库
@@ -11,11 +12,19 @@ conn.connect()
 
 router.get('/getBooks', function(req, res, next){
   var sql = $sql.queryBooks
-  //console.log(sql)
-  conn.query(sql, function (err, result) {
-    res.json(result)
-    //console.log(res)
-  })
+  var sqlQueryBook = $sql.queryBook
+  var params = querystring.parse(url.parse(req.url).query);
+  if(!!params.bookName){
+    conn.query(sqlQueryBook, ['%'+params.bookName+'%'], function (err, result) {
+      console.log(result)
+      console.log(err)
+      res.json(result)
+    })
+  }else{
+    conn.query(sql, function (err, result) {
+      res.json(result)
+    })
+  }
 });
 
 router.post('/sale', function(req, res, next){

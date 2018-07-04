@@ -11,7 +11,7 @@
 
       <el-form-item>
         <span>请输入用户名：</span>
-        <el-input name="username" type="text" v-model="loginForm.username" placeholder="用户名" autoComplete="on" clearable/>
+        <el-input name="username" type="text" v-model="loginForm.username" placeholder="用户名" autoComplete="on" clearable />
       </el-form-item>
 
       <el-form-item>
@@ -41,7 +41,7 @@ export default {
   },
   created () {
     if(this.getCookie("admin") != null){
-      this.$router.replace({path: '/dashboard'})
+      this.$router.replace({path: '/dashboard/CustomerService'})
     }
   },
   methods: {
@@ -54,7 +54,7 @@ export default {
         this.loading = false
         if(res.status === 200 && res.data.status !== 404) {
           let expireDays = 1000*60*60
-          this.$router.push({path: '/dashboard'})
+          this.$router.push({path: '/dashboard/CustomerService'})
           this.setCookie(this.loginForm.username,this.loginForm.password,expireDays);
           this.$message({
             type: 'success',

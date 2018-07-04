@@ -50,7 +50,7 @@ router.get('/logout', function(req, res, next){
     req.session.destroy(function(err){
         if(!err){
             res.clearCookie("bms");
-            res.redirect('/');
+            //res.redirect('/');
         }
     });
 });

@@ -1,5 +1,13 @@
 The server has successfully opened......
-{ bookId: 1, count: 1, customerName: '刘亚辉' }
-{ bookId: 1, count: '3', customerName: '刘笑' }
-{ bookId: 1, count: '1', customerName: '刘笑' }
-{ bookId: 1, count: 1, customerName: '刘笑' }
+[session-file-store] will retry, error on last attempt: Error: ENOENT: no such file or directory, open 'D:\vue-bms\server\sessions\wbfY99jnfCH_aEsl2mlWE--JSNiJj88P.json'
+[session-file-store] will retry, error on last attempt: Error: ENOENT: no such file or directory, open 'D:\vue-bms\server\sessions\wbfY99jnfCH_aEsl2mlWE--JSNiJj88P.json'
+[session-file-store] will retry, error on last attempt: Error: ENOENT: no such file or directory, open 'D:\vue-bms\server\sessions\wbfY99jnfCH_aEsl2mlWE--JSNiJj88P.json'
+[session-file-store] will retry, error on last attempt: Error: ENOENT: no such file or directory, open 'D:\vue-bms\server\sessions\wbfY99jnfCH_aEsl2mlWE--JSNiJj88P.json'
+[session-file-store] will retry, error on last attempt: Error: ENOENT: no such file or directory, open 'D:\vue-bms\server\sessions\wbfY99jnfCH_aEsl2mlWE--JSNiJj88P.json'
+[ RowDataPacket {
+    bookId: 2,
+    bookName: '数据库管理系统',
+    bookNum: 8,
+    bookInfo: '高等教育出版社',
+    bookDate: 2013-06-11T16:00:00.000Z } ]
+null

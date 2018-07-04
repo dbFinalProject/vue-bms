@@ -1,6 +1,7 @@
 <!-- 顾客服务页面 -->
 <template>
   <div>
+    <el-input v-model="searchedBook" auto-complete="off" placeholder="请输入图书名称以检索信息" @keyup.enter.native="handleSearchBook"></el-input>
     <el-table
       :data="tableData"
       style="width: 100%;height: 100%"
@@ -16,16 +17,16 @@
       </el-table-column>
       <el-table-column
         label="出版日期"
-        width="180"
+        width="250"
         align="center">
         <template slot-scope="scope">
           <i class="el-icon-time"></i>
-          <span style="margin-left: 10px">{{ scope.row.bookDate }}</span>
+          <span style="margin-left: 10px">{{ scope.row.bookDate.slice(0, 10) }}</span>
         </template>
       </el-table-column>
       <el-table-column
         label="书名"
-        width="180"
+        width="250"
         align="center">
         <template slot-scope="scope">
           <el-popover trigger="hover" placement="top">
@@ -86,6 +87,7 @@ export default {
   data() {
     return {
       tableData: [],
+      searchedBook: "",
       formLabelWidth: '120px',
       dialogFormVisible: false,
       dialogFormTitle: "",
@@ -115,6 +117,13 @@ export default {
       });
   },
   methods: {
+    handleSearchBook(){
+      this.$http.get('/api/book/getBooks?bookName='+this.searchedBook)
+        .then((res)=>{
+          //console.log(res)
+          this.tableData = res.data
+        });
+    },
     handlePurchase(index, row) {
       this.dialogFormTitle="购买图书"
       this.dialogFormVisible=true
