@@ -3,11 +3,12 @@ var express = require('express')
 var router = express.Router()
 var mysql = require('mysql')
 var $sql = require('../sqlMap')
+
 var conn = mysql.createConnection(models.mysql)
 
 // 连接数据库
-
 conn.connect()
+
 var jsonWrite = function (res, ret) {
   if (typeof ret === 'undefined') {
     res.json({
@@ -19,17 +20,36 @@ var jsonWrite = function (res, ret) {
   }
 }
 
-// 增加用户接口
+// 用户登陆
 router.post('/login', (req, res) => {
-  var conn = mysql.createConnection(models.mysql)
-  var sql = $sql.user.add
+  var sql = $sql.queryAdmin
   var params = req.body
-  conn.query(sql, [params.username, params.age], function (err, result) {
+  // console.log(params)
+  conn.query(sql, [params.username, params.password], function (err, result) {
+    // console.log(result)
     if (err) {
       console.log(err)
     }
-    if (result) {
+    if (result.length) {
+      if (req.session.user) {
+        console.log('您已登陆')
+      }else {
+        req.session.user = {
+          username: params.username,
+          password: params.password
+        }
+      }
       jsonWrite(res, result)
+    } else {
+      res.json({ status: 404, message: '登录失败' })
+    }
+  })
+})
+
+router.get('/logout', function (req, res, next) {
+  req.session.destroy(function (err) {
+    if (!err) {
+      res.clearCookie('bms')
     }
   })
 })
