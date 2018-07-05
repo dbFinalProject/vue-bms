@@ -16,8 +16,8 @@ router.get('/getBooks', function(req, res, next){
   var params = querystring.parse(url.parse(req.url).query);
   if(!!params.bookName){
     conn.query(sqlQueryBook, ['%'+params.bookName+'%'], function (err, result) {
-      console.log(result)
-      console.log(err)
+      //console.log(result)
+      //console.log(err)
       res.json(result)
     })
   }else{
@@ -62,7 +62,7 @@ router.post('/return', function(req, res, next){
   var sqlInsertReturnRecord = $sql.insertReturnRecord
   var sqlSaleBook = $sql.saleBook
   var params = req.body
-  console.log(params)
+  //console.log(params)
   //查看是否有该用户的销售记录
   conn.query(sqlQuerySaleRecord, [params.bookId, params.customerName, params.count], function (err, result) {
     if(!err){

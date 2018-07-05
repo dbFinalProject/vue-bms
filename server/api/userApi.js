@@ -27,21 +27,20 @@ router.post('/login', (req, res) => {
   //console.log(params)
   conn.query(sql, [params.username, params.password], function (err, result) {
     //console.log(result)
-    if (err) {
-      console.log(err)
-    }
-    if (result.length) {
-      if(req.session.user){
-        console.log("您已登陆")
-      }else{
-        req.session.user = {
-          username: params.username,
-          password: params.password
+    if (!err) {
+      if (result.length) {
+        if(req.session.user){
+          //console.log("您已登陆")
+        }else{
+          req.session.user = {
+            username: params.username,
+            password: params.password
+          }
         }
+        jsonWrite(res, result)
+      } else {
+        res.json({ status: 404, message: '登录失败' })
       }
-      jsonWrite(res, result)
-    } else {
-      res.json({ status: 404, message: '登录失败' })
     }
   })
 })

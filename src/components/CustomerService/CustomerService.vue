@@ -46,7 +46,7 @@
           <span>{{ scope.row.bookNum }}</span>
         </template>
       </el-table-column>
-      <el-table-column 
+      <el-table-column
         label="操作"
         align="center">
         <template slot-scope="scope">
@@ -84,18 +84,18 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       tableData: [],
-      searchedBook: "",
+      searchedBook: '',
       formLabelWidth: '120px',
       dialogFormVisible: false,
-      dialogFormTitle: "",
+      dialogFormTitle: '',
       form: {
-        bookId: "",
-        customerName: "",
-        bookName: "",
-        count: ""
+        bookId: '',
+        customerName: '',
+        bookName: '',
+        count: ''
       },
       rules: {
         customerName: [
@@ -112,72 +112,73 @@ export default {
   },
   created () {
     this.$http.get('/api/book/getBooks')
-      .then((res)=>{
+      .then((res) => {
         this.tableData = res.data
-      });
+      })
   },
   methods: {
-    handleSearchBook(){
-      this.$http.get('/api/book/getBooks?bookName='+this.searchedBook)
-        .then((res)=>{
-          //console.log(res)
+    handleSearchBook () {
+      this.$http.get('/api/book/getBooks?bookName=' + this.searchedBook)
+        .then((res) => {
+          // console.log(res)
           this.tableData = res.data
-        });
+        })
     },
-    handlePurchase(index, row) {
-      this.dialogFormTitle="购买图书"
-      this.dialogFormVisible=true
-      this.form.bookId=row.bookId
-      this.form.bookName=row.bookName
-      this.form.count=1
+    handlePurchase (index, row) {
+      this.dialogFormTitle = '购买图书'
+      this.dialogFormVisible = true
+      this.form.bookId = row.bookId
+      this.form.bookName = row.bookName
+      this.form.count = 1
     },
-    handleReturn(index, row) {
-      //console.log(index, row);
-      this.dialogFormTitle="退购图书"
-      this.dialogFormVisible=true
-      this.form.bookId=row.bookId
-      this.form.bookName=row.bookName
-      this.form.count=1
+    handleReturn (index, row) {
+      // console.log(index, row);
+      this.dialogFormTitle = '退购图书'
+      this.dialogFormVisible = true
+      this.form.bookId = row.bookId
+      this.form.bookName = row.bookName
+      this.form.count = 1
     },
-    cancel(){
-      this.dialogFormVisible=false
+    cancel () {
+      this.dialogFormVisible = false
     },
-    confirm(){
-      var that=this;
-      //检验表单
-      this.$refs["ruleForm"].validate((valid) => {
-        if(valid){
-          //post表单信息，进行销售操作或者退货操作
-          var url="";
-          if(that.dialogFormTitle === "购买图书")
-            url="/api/book/sale"
-          else
-            url="/api/book/return"
+    confirm () {
+      var that = this
+      // 检验表单
+      this.$refs['ruleForm'].validate((valid) => {
+        if (valid) {
+          // post表单信息，进行销售操作或者退货操作
+          var url = ''
+          if (that.dialogFormTitle === '购买图书') {
+            url = '/api/book/sale'
+          } else {
+            url = '/api/book/return'
+          }
           that.$http.post(url, {
             bookId: that.form.bookId,
             count: that.form.count,
             customerName: that.form.customerName
-          }).then((res)=>{
-            //销售或退货成功之后进行数据更新
-            if(res.status === 200 && res.data.status!=404){
+          }).then((res) => {
+            // 销售或退货成功之后进行数据更新
+            if (res.status === 200 && res.data.status !== 404) {
               that.$http.get('/api/book/getBooks')
-                .then((res)=>{
+                .then((res) => {
                   that.tableData = res.data
-                  that.dialogFormVisible=false
+                  that.dialogFormVisible = false
                   that.$message({
                     type: 'success',
-                    message: this.dialogFormTitle === "购买图书" ? "购买成功" : "退订成功"
-                  });
-                });
-            }else{
+                    message: this.dialogFormTitle === '购买图书' ? '购买成功' : '退订成功'
+                  })
+                })
+            } else {
               that.$message({
                 type: 'error',
                 message: res.data.message
-              });
+              })
             }
-          });
+          })
         }
-      });
+      })
     }
   }
 }

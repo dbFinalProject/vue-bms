@@ -53,6 +53,7 @@ app.use(session({
 // 跨域支持
 app.all('*', (req, res, next) => {
   const origin = req.headers.origin
+  // console.log(origin)
   res.header('Access-Control-Allow-Origin', origin)
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, token,sign')
   res.header('Access-Control-Allow-Credentials', true)
