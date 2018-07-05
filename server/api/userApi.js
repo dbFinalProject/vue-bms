@@ -24,16 +24,16 @@ var jsonWrite = function (res, ret) {
 router.post('/login', (req, res) => {
   var sql = $sql.queryAdmin
   var params = req.body
-  //console.log(params)
+  // console.log(params)
   conn.query(sql, [params.username, params.password], function (err, result) {
-    //console.log(result)
+    // console.log(result)
     if (err) {
       console.log(err)
     }
     if (result.length) {
-      if(req.session.user){
-        console.log("您已登陆")
-      }else{
+      if (req.session.user) {
+        console.log('您已登陆')
+      }else {
         req.session.user = {
           username: params.username,
           password: params.password
@@ -46,13 +46,12 @@ router.post('/login', (req, res) => {
   })
 })
 
-router.get('/logout', function(req, res, next){
-    req.session.destroy(function(err){
-        if(!err){
-            res.clearCookie("bms");
-            //res.redirect('/');
-        }
-    });
-});
+router.get('/logout', function (req, res, next) {
+  req.session.destroy(function (err) {
+    if (!err) {
+      res.clearCookie('bms')
+    }
+  })
+})
 
 module.exports = router
