@@ -24,34 +24,22 @@ var jsonWrite = function (res, ret) {
 router.post('/login', (req, res) => {
   var sql = $sql.queryAdmin
   var params = req.body
-  //console.log(params)
+  // console.log(params)
   conn.query(sql, [params.username, params.password], function (err, result) {
     //console.log(result)
     if (!err) {
       if (result.length) {
-        if(req.session.user){
-          //console.log("您已登陆")
+        if(req.session.loginUser === params.username){
+          res.json({status: true, message: '登录成功'})
         }else{
-          req.session.user = {
-            username: params.username,
-            password: params.password
-          }
+          req.session.loginUser=params.username
+          res.json({status: true, message: '登录成功'})
         }
-        jsonWrite(res, result)
       } else {
-        res.json({ status: 404, message: '登录失败' })
+        res.json({ status: false, message: '登录失败' })
       }
     }
   })
 })
-
-router.get('/logout', function(req, res, next){
-    req.session.destroy(function(err){
-        if(!err){
-            res.clearCookie("bms");
-            //res.redirect('/');
-        }
-    });
-});
 
 module.exports = router

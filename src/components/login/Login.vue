@@ -40,9 +40,9 @@ export default {
     }
   },
   created () {
-    if (this.getCookie('admin') != null) {
-      this.$router.replace({path: '/dashboard/CustomerService'})
-    }
+    // if (this.getCookie('admin') != null) {
+    //   this.$router.replace({path: '/dashboard/CustomerService'})
+    // }
   },
   methods: {
     handleLogin () {
@@ -51,11 +51,12 @@ export default {
         username: this.loginForm.username,
         password: this.loginForm.password
       }).then((res) => {
+        console.log(res.data)
         this.loading = false
-        if (res.status === 200 && res.data.status !== 404) {
-          let expireDays = 1000 * 60 * 60
-          this.$router.push({path: '/dashboard/CustomerService'})
-          this.setCookie(this.loginForm.username, this.loginForm.password, expireDays)
+        if (res.status === 200 && res.data.status === true) {
+          //let expireDays = 1000 * 60 * 60
+          this.$router.push({path: '/Dashboard/CustomerService'})
+          //this.setCookie(this.loginForm.username, this.loginForm.password, expireDays)
           this.$message({
             type: 'success',
             message: '登陆成功'

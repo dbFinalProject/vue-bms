@@ -21,7 +21,7 @@
         align="center">
         <template slot-scope="scope">
           <i class="el-icon-time"></i>
-          <span style="margin-left: 10px">{{ scope.row.bookDate.slice(0, 10) }}</span>
+          <span style="margin-left: 10px">{{ scope.row.bookDate ? scope.row.bookDate.slice(0, 10) : scope.row.bookDate }}</span>
         </template>
       </el-table-column>
       <el-table-column

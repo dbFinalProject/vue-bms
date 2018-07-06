@@ -26,29 +26,41 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 // 静态文件目录
 app.use('/server/uploads', express.static(path.join(__dirname, 'uploads')))
-
-app.use(session({
+var sessionConfig = {
   name: 'bms',
   secret: 'bms',
   cookie: { maxAge: 60 * 60 * 1000 },
   store: new FileStore(),
   resave: false,
   saveUninitialized: true
-}))
+}
 
-// app.use((req, res, next) => {
-//   // 如果cookie中存在，则说明已经登录
-//   if (req.session.user) {
-//     res.locals.user = {
-//       uid: req.session.user.uid,
-//       username: req.session.user.username,
-//       userright: req.session.user.userright
-//     }
-//   } else {
-//     res.locals.user = {}
-//   }
-//   next()
-// })
+app.use(session(sessionConfig))
+
+app.get('/api/user/login', (req, res, next) => {
+  // 如果cookie中存在，则说明已经登录
+  sessionConfig.store.get(req.sessionID, function (err, doc) {
+    if (err) {
+      //console.log(err);
+      res.json({ status: false });
+    } else if (doc && doc.loginUser === req.session.loginUser) {
+      res.json({ status: true });
+    } else {
+      res.json({ status: false });
+    }
+  })
+})
+
+app.get('/api/user/logout', (req, res, next) => {
+  sessionConfig.store.destroy(req.sessionID, function(err) {
+    if(err){
+      res.json({ status: false, message: "退出失败" })
+    } else {
+      res.clearCookie(sessionConfig.name);
+      res.json({ status: true, message: "退出成功" })
+    }
+  })
+})
 
 // 跨域支持
 app.all('*', (req, res, next) => {

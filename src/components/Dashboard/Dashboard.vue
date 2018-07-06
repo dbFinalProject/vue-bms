@@ -25,15 +25,13 @@ export default {
     }
   },
   created () {
-    if (this.getCookie('admin') == null) {
-      this.$router.replace({path: '/login'})
-    }
+    this.$router.replace({path: '/Dashboard/CustomerService'})
   },
   methods: {
     handleSelect (key, keyPath) {
       console.log(this.$route.path)
       if (key === 'Logout') {
-        this.delCookie('admin')
+        //this.delCookie('admin')
         // console.log(this.getCookie('admin'))
         this.$router.replace({path: '/login'})
         this.$http.get('/api/user/logout')
