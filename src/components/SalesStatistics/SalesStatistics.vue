@@ -189,28 +189,28 @@
               picker.$emit('pick', [start, end]);
             }
           }]
+			},
+			value7: '',
+			activeNames: []
+			}
 		},
-		value7: '',
-		activeNames: []
-	  }
-	},
-	created () {
-    this.$http.post('/api/book/getStatistics', {
-			startTime: "0000-00-00",
-			endTime: "9999-99-99"
-		}).then((res)=>{
-				this.pBookData = res.data["sBook"]
-				this.sBookData = res.data["sBook"]
-				this.statisticsData = res.data['sBook']
-    	});
-  	},
-	methods: {
-		handleChange(val) {
-			console.log(val);
+		created () {
+			this.$http.post('/api/book/getStatistics', {
+				startTime: "0000-00-00",
+				endTime: "9999-99-99"
+			}).then((res)=>{
+					this.pBookData = res.data["sBook"]
+					this.sBookData = res.data["sBook"]
+					this.statisticsData = res.data['sBook']
+			});
 		},
-		Search() {
-			//console.log(this.startTime);
+		methods: {
+			handleChange(val) {
+				console.log(val);
+			},
+			Search() {
+				//console.log(this.startTime);
+			}
 		}
-	}
-};
+	};
 </script>

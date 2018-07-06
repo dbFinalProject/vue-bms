@@ -102,7 +102,7 @@ router.post('/getStatistics', function (req, res, next) {
       conn.query(querypurchaseTableByTime, [params.startTime, params.endTime], function (err, result) {
         if (!err) {
           data['pBook'] = result
-          console.log(data)
+          //console.log(data)
           res.json(data)
         } else {
           res.json({ status: 404, message: '发生错误，请重试' })
@@ -120,7 +120,15 @@ router.get('/getProviderInfo', function (req, res, next) {
   // 获得进货商的报价表
   conn.query(queryProviderInfo, [], function (err, result) {
     if (!err) {
-      res.json(result)
+      var data = []
+      for (var i = 0; i < result.length; ++i) {
+        if (!data[result[i].providerId - 1]) {
+          data[result[i].providerId - 1] = new Array(result[i])
+        } else {
+          data[result[i].providerId - 1].push(result[i])
+        }
+      }
+      res.json(data)
     } else {
       res.json({ status: 404, message: '发生错误，请重试' })
     }
