@@ -68,7 +68,7 @@
           <el-input v-model="form.customerName" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="书本名称" :label-width="formLabelWidth" prop="bookName">
-          <el-input v-model="form.bookName" auto-complete="off"></el-input>
+          <el-input v-model="form.bookName" auto-complete="off" readonly="true"></el-input>
         </el-form-item>
         <el-form-item label="数量" :label-width="formLabelWidth" prop="count">
           <el-input v-model="form.count" auto-complete="off"></el-input>
@@ -140,9 +140,11 @@ export default {
       this.form.count = 1
     },
     cancel () {
+      customerName = ""
       this.dialogFormVisible = false
     },
     confirm () {
+      customerName = ""
       var that = this
       // 检验表单
       this.$refs['ruleForm'].validate((valid) => {

@@ -17,8 +17,8 @@ router.get('/getBooks', function (req, res, next) {
   var params = querystring.parse(url.parse(req.url).query)
   if (params.bookName) {
     conn.query(sqlQueryBook, ['%' + params.bookName + '%'], function (err, result) {
-      console.log(result)
-      console.log(err)
+      // console.log(result)
+      // console.log(err)
       res.json(result)
     })
   }else {

@@ -46,7 +46,7 @@ const routes = [
   },
   {
     path: '/*',
-    redirect: '/login'
+    redirect: '/Dashboard/CustomerService'
   }
 ];
 
@@ -58,7 +58,6 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   if(to.meta.requireAuth) {
     axios.get('/api/user/login').then(res => {
-      //console.log(res)
       if(res.data.status === true) {
         next();
       } else {

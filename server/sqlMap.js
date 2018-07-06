@@ -9,7 +9,7 @@ var sqlMap = {
   insertSaleRecord: 'insert into saleTable values(?, ?, ?, ?)',
   querySaleRecord: 'select * from saleTable where bookId=? and customerName=? and saleCount>=?',
   insertReturnRecord: 'insert into returnTable values(?, ?, ?, ?)',
-  querySaleRecordByTime: 'select saleTable.saleTime, saleTable.saleCount, book.bookName, book.bookInfo, saleTable.customerName from saleTable, book where book.bookId = saleTable.bookId and saleTime >= ? and saleTime <= ?',
+  querySaleRecordByTime: 'select saleTable.saleTime, saleTable.saleCount, book.bookName, book.bookInfo, saleTable.customerName from saleTable, book where book.bookId = saleTable.bookId and Date(saleTime) >= ? and Date(saleTime) <= ?',
   querypurchaseTableByTime: 'select purchasetable.purchaseTime, purchasetable.purchaseCount, book.bookName, book.bookInfo, provider.providerName from purchasetable, book, provider where provider.providerId = purchasetable.providerId and purchaseTime >= ? and purchaseTime <= ? and purchasetable.bookId = book.bookId',
   queryProviderInfo: 'select * from provider, quotedPrice, book where provider.providerId = quotedPrice.providerId and quotedPrice.bookId = book.bookId',
   queryIsOwnBook: 'select * from reportory where reportory.bookId == ?',

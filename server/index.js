@@ -4,7 +4,7 @@
 const userApi = require('./api/userApi')
 const bookApi = require('./api/bookApi')
 const managerApi = require('./api/managerApi')
-var cookieParser = require('cookie-parser');
+var cookieParser = require('cookie-parser')
 
 // 引入文件模块
 const fs = require('fs')
@@ -19,8 +19,8 @@ const app = express()
 
 // 引入session模块
 const session = require('express-session')
-var FileStore = require('session-file-store')(session);
-app.use(cookieParser());
+var FileStore = require('session-file-store')(session)
+app.use(cookieParser())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
@@ -38,17 +38,20 @@ var sessionConfig = {
 app.use(session(sessionConfig))
 
 app.get('/api/user/login', (req, res, next) => {
-  // 如果cookie中存在，则说明已经登录
-  sessionConfig.store.get(req.sessionID, function (err, doc) {
-    if (err) {
-      //console.log(err);
-      res.json({ status: false });
-    } else if (doc && doc.loginUser === req.session.loginUser) {
-      res.json({ status: true });
-    } else {
-      res.json({ status: false });
-    }
-  })
+  //console.log(req)
+  if(req.session.loginUser){
+    sessionConfig.store.get(req.sessionID, function (err, doc) {
+      if (err) {
+        res.json({ status: false })
+      } else if (doc && doc.loginUser === req.session.loginUser) {
+        res.json({ status: true })
+      } else {
+        res.json({ status: false })
+      }
+    })
+  }else{
+    res.json({ status: false })
+  }
 })
 
 app.get('/api/user/logout', (req, res, next) => {
@@ -56,8 +59,14 @@ app.get('/api/user/logout', (req, res, next) => {
     if(err){
       res.json({ status: false, message: "退出失败" })
     } else {
-      res.clearCookie(sessionConfig.name);
-      res.json({ status: true, message: "退出成功" })
+      req.session.destroy(function (err) {
+        if(err){
+          res.json({ status: false, message: "退出失败" })
+        } else {
+          res.clearCookie(sessionConfig.name)
+          res.json({ status: true, message: "退出成功" })
+        }
+      })
     }
   })
 })
