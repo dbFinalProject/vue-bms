@@ -24,21 +24,19 @@ export default {
     return {
     }
   },
-  created() {
-    if(this.getCookie("admin") == null){
-      this.$router.replace({path: '/login'})
-    }
+  created () {
+    this.$router.replace({path: '/Dashboard/CustomerService'})
   },
   methods: {
     handleSelect (key, keyPath) {
-      console.log(this.$route.path);
-      if(key === "Logout"){
-        this.delCookie("admin")
-        //console.log(this.getCookie("admin"))
+      console.log(this.$route.path)
+      if (key === 'Logout') {
+        //this.delCookie('admin')
+        // console.log(this.getCookie('admin'))
         this.$router.replace({path: '/login'})
-        this.$http.get('/api/user/logout');
-      }else{
-        this.$router.push({path: '/Dashboard/'+key})
+        this.$http.get('/api/user/logout')
+      } else {
+        this.$router.push({path: '/Dashboard/' + key})
       }
     }
   }

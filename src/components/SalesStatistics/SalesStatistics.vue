@@ -12,7 +12,7 @@
       end-placeholder="结束日期"
       :picker-options="pickerOptions2">
     </el-date-picker>
-		<el-button icon="el-icon-search" circle></el-button>
+		<el-button icon="el-icon-search" circle @click="Search"></el-button>
 		<el-collapse v-model="activeNames" @change="handleChange">
 			<el-collapse-item title="进货记录" name="1">
 				<el-table 
@@ -23,7 +23,7 @@
 						align="center">
 						<template slot-scope="scope">
 							<i class="el-icon-time"></i>
-        		  <span style="margin-left: 10px">{{ scope.row.saleTime.slice(0, 10) }}</span>
+        		  <span style="margin-left: 10px">{{ scope.row.saleTime ? scope.row.saleTime.slice(0, 10) : scope.row.saleTime  }}</span>
 						</template>
 					</el-table-column>
 					<el-table-column
@@ -73,7 +73,7 @@
 						align="center">
 						<template slot-scope="scope">
 							<i class="el-icon-time"></i>
-							<span style="margin-left: 10px">{{ scope.row.saleTime.slice(0, 10) }}</span>
+							<span style="margin-left: 10px">{{ scope.row.saleTime ? scope.row.saleTime.slice(0, 10) : scope.row.saleTime }}</span>
 						</template>
 					</el-table-column>
 					<el-table-column
@@ -125,7 +125,7 @@
 						align="center">
 						<template slot-scope="scope">
 							<i class="el-icon-time"></i>
-							<span style="margin-left: 10px">{{ scope.row.bookDate.slice(0, 10) }}</span>
+							<span style="margin-left: 10px">{{ scope.row.bookDate ? scope.row.bookDate.slice(0, 10) : scope.row.bookDate }}</span>
 						</template>
 					</el-table-column>
 					<el-table-column
@@ -160,6 +160,9 @@
   export default {
     data() {
       return {
+      	pBookData: [],
+      	sBookData: [],
+      	statisticsData: [],
         pickerOptions2: {
           shortcuts: [{
             text: '最近一周',
@@ -167,10 +170,6 @@
               const end = new Date();
               const start = new Date();
 			  			start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-							//  end.setTime(parseInt(end.getTime() / (3600 * 1000 * 24)) * 3600 * 1000 * 24);
-							console.log(end.getTime());
-							console.log(end.getTime() / (3600 * 1000 * 24));
-							console.log((parseInt(end.getTime() / (3600 * 1000 * 24)) * 3600 * 1000 * 24));
               picker.$emit('pick', [start, end]);
             }
           }, {
@@ -200,14 +199,17 @@
 			startTime: "0000-00-00",
 			endTime: "9999-99-99"
 		}).then((res)=>{
-				this.pBookData = res.data["pBook"]
+				this.pBookData = res.data["sBook"]
 				this.sBookData = res.data["sBook"]
-				this.statisticsData = res.data
+				this.statisticsData = res.data['sBook']
     	});
-  },
+  	},
 	methods: {
 		handleChange(val) {
 			console.log(val);
+		},
+		Search() {
+			//console.log(this.startTime);
 		}
 	}
 };

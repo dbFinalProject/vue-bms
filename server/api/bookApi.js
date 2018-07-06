@@ -13,6 +13,7 @@ conn.connect()
 router.get('/getBooks', function (req, res, next) {
   var sql = $sql.queryBooks
   var sqlQueryBook = $sql.queryBook
+
   var params = querystring.parse(url.parse(req.url).query)
   if (params.bookName) {
     conn.query(sqlQueryBook, ['%' + params.bookName + '%'], function (err, result) {
@@ -56,7 +57,6 @@ router.post('/sale', function (req, res, next) {
       res.json({status: 404, message: '发生错误，请重试'})
     }
   })
-
 })
 
 router.post('/return', function (req, res, next) {
@@ -98,11 +98,9 @@ router.post('/getStatistics', function (req, res, next) {
   // 销售情况
   conn.query(querySaleRecordByTime, [params.startTime, params.endTime], function (err, result) {
     if (!err) {
-      console.log('sbook' + result)
       data['sBook'] = result
       conn.query(querypurchaseTableByTime, [params.startTime, params.endTime], function (err, result) {
         if (!err) {
-          console.log('pbook' + result)
           data['pBook'] = result
           console.log(data)
           res.json(data)

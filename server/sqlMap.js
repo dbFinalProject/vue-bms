@@ -14,7 +14,7 @@ var sqlMap = {
   queryProviderInfo: 'select * from provider, quotedPrice, book where provider.providerId = quotedPrice.providerId and quotedPrice.bookId = book.bookId',
   queryIsOwnBook: 'select * from reportory where reportory.bookId == ?',
   updateBookNum: 'update book set bookNum = ? where bookId = ?',
-    purchaseBook: 'insert into purchaseTable values(?, ?, ?, ?)'
+  purchaseBook: 'insert into purchaseTable values(?, ?, ?, ?)'
 }
 
 module.exports = sqlMap

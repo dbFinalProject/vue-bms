@@ -1,4 +1,4 @@
 <!-- 进货页面 -->
 <template>
-	<div>PurchaseBook</div>
+  <div>PurchaseBook</div>
 </template>
