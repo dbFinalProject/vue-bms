@@ -75,7 +75,7 @@ export default {
 }
 </script>
 
-<style rel="stylesheet/scss">
+<style rel="stylesheet/scss" scoped>
   .login-container {
     position: fixed;
     height: 100%;

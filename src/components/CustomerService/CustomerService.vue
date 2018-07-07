@@ -212,7 +212,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
   .searchInput{
     position: fixed;
     top: 70px;

@@ -1,8 +1,8 @@
 <!-- 进货页面 -->
 <template>
   <div>
-    <div v-for="o in providerInfo" :key="o[0].providerId" class="text item">
-      <el-card class="box-card" >
+    <div v-for="o in providerInfo" :key="o[0].providerId" class="text item" style="height: 100%">
+      <el-card class="box-card">
         <div class="clearfix">
           <el-popover trigger="hover" placement="top">
             <p>姓名: {{ o[0].providerName }}</p>
@@ -173,24 +173,20 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
   .text {
     font-size: 14px;
   }
-
   .item {
     margin-bottom: 18px;
   }
-
-  .clearfix:before,
-  .clearfix:after {
+  .clearfix:before, .clearfix:after {
     display: table;
     content: "";
   }
   .clearfix:after {
     clear: both
   }
-
   .box-card {
     width: 100%;
   }
