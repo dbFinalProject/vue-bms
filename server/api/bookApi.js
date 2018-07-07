@@ -67,8 +67,9 @@ router.post('/return', function (req, res, next) {
   var params = req.body
   console.log(params)
   // 查看是否有该用户的销售记录
-  conn.query(sqlQuerySaleRecord, [params.bookId, params.customerName, params.count], function (err, result) {
+  conn.query(sqlQuerySaleRecord, [params.bookId, params.customerName, params.count, params.bookId, params.customerName], function (err, result) {
     if (!err) {
+      
       if (result.length) {
         // 插入一条退货记录
         conn.query(sqlInsertReturnRecord, [params.bookId, new Date(), params.count, params.customerName, params.returnAmount], function (err, result) {
@@ -92,7 +93,8 @@ router.post('/return', function (req, res, next) {
 
 router.post('/getStatistics', function (req, res, next) {
   var querySaleRecordByTime = $sql.querySaleRecordByTime
-  var querypurchaseTableByTime = $sql.querypurchaseTableByTime
+  var queryPurchaseTableByTime = $sql.queryPurchaseTableByTime
+  var queryReturnRecordByTime = $sql.queryReturnRecordByTime
   var params = req.body
   console.log(params)
   var data = {}
@@ -100,11 +102,18 @@ router.post('/getStatistics', function (req, res, next) {
   conn.query(querySaleRecordByTime, [params.startTime, params.endTime], function (err, result) {
     if (!err) {
       data['sBook'] = result
-      conn.query(querypurchaseTableByTime, [params.startTime, params.endTime], function (err, result) {
+      conn.query(queryPurchaseTableByTime, [params.startTime, params.endTime], function (err, result) {
         if (!err) {
           data['pBook'] = result
-          //console.log(data)
-          res.json(data)
+          conn.query(queryReturnRecordByTime, [params.startTime, params.endTime], function(err, result){
+            console.log(err)
+            if(!err){
+              data['rBook'] = result
+              res.json(data)
+            } else {
+              res.json({ status: 404, message: '发生错误，请重试' })
+            }
+          })
         } else {
           res.json({ status: 404, message: '发生错误，请重试' })
         }

@@ -1,10 +1,9 @@
 <!-- 顾客服务页面 -->
 <template>
   <div>
-    <el-input v-model="searchedBook" auto-complete="off" placeholder="请输入图书名称以检索信息" @keyup.enter.native="handleSearchBook"></el-input>
+    <el-input class="searchInput" v-model="searchedBook" auto-complete="off" placeholder="请输入图书名称以检索信息" @keyup.enter.native="handleSearchBook"></el-input>
     <el-table
       :data="tableData"
-      style="width: 100%;height: 100%"
       stripe
       >
       <el-table-column
@@ -25,7 +24,7 @@
         </template>
       </el-table-column>
       <el-table-column
-        label="书名"
+        label="图书名称"
         width="250"
         align="center">
         <template slot-scope="scope">
@@ -46,6 +45,16 @@
           <span>{{ scope.row.count }}</span>
         </template>
       </el-table-column>
+
+      <el-table-column
+        label="价格"
+        width="180"
+        align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.price }}</span>
+        </template>
+      </el-table-column>
+
       <el-table-column
         label="操作"
         align="center">
@@ -85,6 +94,16 @@
 <script>
 export default {
   data () {
+    const checkCount = (rule, count, callback) => {
+      let reg = /^[1-9]\d*$/;
+      var _this = this;
+      console.log(count)
+      if (new RegExp(reg).test(count) === true) {
+        callback()
+      } else { 
+        callback(new Error('图书数量至少为1'))
+      }
+    }
     return {
       tableData: [],
       searchedBook: '',
@@ -96,7 +115,7 @@ export default {
         customerName: '',
         bookName: '',
         count: '',
-        price: '',
+        price: ''
       },
       rules: {
         customerName: [
@@ -106,7 +125,8 @@ export default {
           {required: true, message: '请输入图书名称', trigger: 'blur'}
         ],
         count: [
-          {required: true, message: '请输入图书数量', trigger: 'blur'}
+          {required: true, message: '请输入图书数量', trigger: 'blur'},
+          {type: 'number', validator: checkCount, trigger: 'blur'}
         ]
       }
     }
@@ -128,19 +148,23 @@ export default {
     handlePurchase (index, row) {
       this.dialogFormTitle = '购买图书'
       this.dialogFormVisible = true
-      this.form.bookId = row.bookId
-      this.form.bookName = row.bookName
-      this.form.count = 1
-      this.form.price = row.price
+      this.form = {
+        bookId: row.bookId,
+        bookName: row.bookName,
+        count: 1,
+        price: row.price
+      }
     },
     handleReturn (index, row) {
       // console.log(index, row);
       this.dialogFormTitle = '退购图书'
       this.dialogFormVisible = true
-      this.form.bookId = row.bookId
-      this.form.bookName = row.bookName
-      this.form.count = 1
-      this.form.price = row.price
+      this.form = {
+        bookId: row.bookId,
+        bookName: row.bookName,
+        count: 1,
+        price: row.price
+      }
     },
     cancel () {
       this.dialogFormVisible = false
@@ -190,3 +214,18 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+  .searchInput{
+    position: fixed;
+    top: 70px;
+    left: 0px;
+    width: 100%;
+    margin: 0px 10px;
+  }
+
+  .el-table{
+    margin-top: 45px;
+  }
+</style>
+
