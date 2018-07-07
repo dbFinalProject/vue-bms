@@ -15,7 +15,7 @@
           <span>{{ scope.row.bookId }}</span>
         </template>
       </el-table-column>
-      
+
       <el-table-column
         label="出版日期"
         width="250"
@@ -161,7 +161,7 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style>
   .searchInput{
     position: fixed;
     top: 70px;

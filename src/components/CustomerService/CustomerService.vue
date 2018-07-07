@@ -97,7 +97,7 @@ export default {
     const checkCount = (rule, count, callback) => {
       if (new RegExp(/^[1-9]\d*$/).test(count) === true) {
         callback()
-      } else if (new RegExp(/^[1-9]\d*.[0-9]\d*$/).test(count) === true) { 
+      } else if (new RegExp(/^[1-9]\d*.[0-9]\d*$/).test(count) === true) {
         callback(new Error('请输入整数'))
       } else if (count <= 0) {
         callback(new Error('图书数量至少为1'))
@@ -133,17 +133,15 @@ export default {
     }
   },
   created () {
-    this.$http.get('/api/book/getBooks')
-      .then((res) => {
-          this.tableData = res.data
-      })
+    this.$http.get('/api/book/getBooks').then((res) => {
+      this.tableData = res.data
+    })
   },
   methods: {
     handleSearchBook () {
-      this.$http.get('/api/book/getBooks?bookName=' + this.searchedBook)
-        .then((res) => {
-          this.tableData = res.data
-        })
+      this.$http.get('/api/book/getBooks?bookName=' + this.searchedBook).then((res) => {
+        this.tableData = res.data
+      })
     },
     handlePurchase (index, row) {
       this.dialogFormTitle = '购买图书'
@@ -174,10 +172,11 @@ export default {
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
           // post表单信息，进行销售操作或者退货操作
-          var url = '', params = {
+          var url = ''
+          var params = {
             'bookId': that.form.bookId,
             'count': that.form.count,
-            'customerName': that.form.customerName,
+            'customerName': that.form.customerName
           }
           if (that.dialogFormTitle === '购买图书') {
             url = '/api/book/sale'
@@ -186,9 +185,9 @@ export default {
             url = '/api/book/return'
             params['returnAmount'] = that.form.count * that.form.price
           }
-          console.log(params)
+          // console.log(params)
           that.$http.post(url, params).then((res) => {
-            // 销售或退货成功之后进行数据更新            
+            // 销售或退货成功之后进行数据更新
             if (res.status === 200 && res.data.status !== false) {
               that.$http.get('/api/book/getBooks')
                 .then((res) => {
@@ -213,7 +212,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style>
   .searchInput{
     position: fixed;
     top: 70px;
