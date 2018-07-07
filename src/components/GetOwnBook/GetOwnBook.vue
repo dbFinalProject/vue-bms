@@ -112,16 +112,15 @@ export default {
     }
   },
   created () {
-    this.$http.get('/api/book/getBooks')
+    this.$http.get('/api/book/getReportory')
       .then((res) => {
         this.tableData = res.data
       })
   },
   methods: {
     handleSearchBook () {
-      this.$http.get('/api/book/getBooks?bookName=' + this.searchedBook)
+      this.$http.get('/api/book/getReportory?bookName=' + this.searchedBook)
         .then((res) => {
-          // console.log(res)
           this.tableData = res.data
         })
     },
@@ -141,8 +140,8 @@ export default {
         bookId: that.form.bookId,
         price: that.form.price
       }).then((res) => {
-        if (res.status === 200 && res.data.status !== 404) {
-          that.$http.get('/api/book/getBooks')
+        if (res.status === 200 && res.data.status !== false) {
+          that.$http.get('/api/book/getReportory')
             .then((res) => {
               that.tableData = res.data
               that.dialogFormVisible = false

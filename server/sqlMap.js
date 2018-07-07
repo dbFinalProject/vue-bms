@@ -2,8 +2,10 @@
 var sqlMap = {
   // 用户
   queryAdmin: 'select * from admin where userName=? and userPassword=?',
-  queryBooks: 'select * from reportory, book where reportory.bookId = book.bookId',
-  queryBook: 'select * from reportory, book where reportory.bookId = book.bookId and book.bookName like ?',
+  queryBooks: 'select * from reportory, book where reportory.bookId = book.bookId and reportory.count > 0',
+  queryBook: 'select * from reportory, book where reportory.bookId = book.bookId and reportory.count > 0 and book.bookName like ?',
+  QueryReportoryBooks: 'select * from reportory, book where reportory.bookId = book.bookId',
+  QueryReportoryBook: 'select * from reportory, book where reportory.bookId = book.bookId book.bookName like ?',
   queryReportoryBook: 'select * from reportory where bookId=? and count>=?',
   saleBook: 'update reportory set count=count-? where bookId=?',
   insertSaleRecord: 'insert into saleTable values(?, ?, ?, ?, ?)',

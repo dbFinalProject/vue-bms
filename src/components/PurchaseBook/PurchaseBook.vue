@@ -86,6 +86,17 @@
 <script>
   export default {
     data() {
+      const checkCount = (rule, count, callback) => {
+        if (new RegExp(/^[1-9]\d*$/).test(count) === true) {
+          callback()
+        } else if (new RegExp(/^[1-9]\d*.[0-9]\d*$/).test(count) === true) { 
+          callback(new Error('请输入整数'))
+        } else if (count <= 0) {
+          callback(new Error('图书数量至少为1'))
+        } else {
+          callback(new Error('请输入正确的图书数量'))
+        }
+      }
       return {
         providerInfo: [],
         dialogFormTitle: '进购图书',
@@ -109,7 +120,8 @@
             {required: true, message: '请输入图书报价', trigger: 'blur'}
           ],
           count: [
-            {required: true, message: '请输入图书数量', trigger: 'blur'}
+            {required: true, message: '请输入图书数量', trigger: 'blur'},
+            {validator: checkCount, trigger: 'blur'}
           ]
         }
 			}
@@ -150,6 +162,7 @@
           purchaseCount: this.form.count,
           purchaseAmount: this.form.count * this.form.qPrice
         }).then(res => {
+          this.$router.push('/Dashboard/GetOwnBook')
           this.$message({
             type: res.data.status ? 'success':'error',
             message: res.data.message

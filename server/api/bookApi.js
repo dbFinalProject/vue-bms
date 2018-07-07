@@ -11,18 +11,34 @@ var conn = mysql.createConnection(models.mysql)
 conn.connect()
 
 router.get('/getBooks', function (req, res, next) {
-  var sql = $sql.queryBooks
+  var sqlQueryBooks = $sql.queryBooks
   var sqlQueryBook = $sql.queryBook
 
   var params = querystring.parse(url.parse(req.url).query)
   if (params.bookName) {
     conn.query(sqlQueryBook, ['%' + params.bookName + '%'], function (err, result) {
-      // console.log(result)
-      // console.log(err)
+      console.log(err)
       res.json(result)
     })
-  }else {
-    conn.query(sql, function (err, result) {
+  } else {
+    conn.query(sqlQueryBooks, function (err, result) {
+      console.log(err)
+      res.json(result)
+    })
+  }
+})
+
+router.get('/getReportory', function(req, res, next){
+  var QueryReportoryBooks = $sql.QueryReportoryBooks
+  var QueryReportoryBook = $sql.QueryReportoryBook
+
+  var params = querystring.parse(url.parse(req.url).query)
+  if (params.bookName) {
+    conn.query(QueryReportoryBook, ['%' + params.bookName + '%'], function (err, result) {
+      res.json(result)
+    })
+  } else {
+    conn.query(QueryReportoryBooks, function (err, result) {
       res.json(result)
     })
   }
@@ -47,14 +63,14 @@ router.post('/sale', function (req, res, next) {
               }
             })
           } else {
-            res.json({status: 404, message: '发生错误，请重试'})
+            res.json({status: false, message: '发生错误，请重试'})
           }
         })
       } else {
-        res.json({status: 404, message: '请输入正确的退货信息！'})
+        res.json({status: false, message: '库存不足'})
       }
     } else {
-      res.json({status: 404, message: '发生错误，请重试'})
+      res.json({status: false, message: '发生错误，请重试'})
     }
     console.log(err)
   })
@@ -79,14 +95,14 @@ router.post('/return', function (req, res, next) {
               res.json(result)
             })
           } else {
-            res.json({status: 404, message: '发生错误，请重试'})
+            res.json({status: false, message: '发生错误，请重试'})
           }
         })
       } else {
-        res.json({status: 404, message: '请输入正确的退货信息！'})
+        res.json({status: false, message: '请输入正确的退货信息！'})
       }
     } else {
-      res.json({status: 404, message: '发生错误，请重试'})
+      res.json({status: false, message: '发生错误，请重试'})
     }
   })
 })
@@ -111,15 +127,15 @@ router.post('/getStatistics', function (req, res, next) {
               data['rBook'] = result
               res.json(data)
             } else {
-              res.json({ status: 404, message: '发生错误，请重试' })
+              res.json({ status: false, message: '发生错误，请重试' })
             }
           })
         } else {
-          res.json({ status: 404, message: '发生错误，请重试' })
+          res.json({ status: false, message: '发生错误，请重试' })
         }
       })
     } else {
-      res.json({ status: 404, message: '发生错误，请重试' })
+      res.json({ status: false, message: '发生错误，请重试' })
     }
   })
 })
@@ -140,7 +156,7 @@ router.get('/getProviderInfo', function (req, res, next) {
       }
       res.json(data)
     } else {
-      res.json({ status: 404, message: '发生错误，请重试' })
+      res.json({ status: false, message: '发生错误，请重试' })
     }
   })
 })
@@ -161,26 +177,26 @@ router.post('/purchase', function (req, res, next) {
             var bookNum = result[0].count
             conn.query(updateBookNum, [params.purchaseCount + bookNum, params.bookId], function (err, result) {
                 if (!err) {
-                  res.json({status: true, message: '购买成功'})
+                  res.json({status: true, message: '购买成功，请给图书定价'})
                 } else {
-                  res.json({ status: 404, message: '发生错误，请重试' })
+                  res.json({ status: false, message: '发生错误，请重试' })
                 }
               })
           } else {
             conn.query(insertReportory, [params.bookId, 0, params.purchaseCount], function (err, result) {
                 if (!err) {
-                  res.json({status: true, message: '购买成功'})
+                  res.json({status: true, message: '购买成功, 请给图书定价'})
                 } else {
-                  res.json({ status: 404, message: '发生错误，请重试' })
+                  res.json({ status: false, message: '发生错误，请重试' })
                 }
               })  
           }        
         } else {
-          res.json({ status: 404, message: '发生错误，请重试' })
+          res.json({ status: false, message: '发生错误，请重试' })
         }
       })
     } else {
-      res.json({ status: 404, message: '发生错误，请重试' })
+      res.json({ status: false, message: '发生错误，请重试' })
     }
   })
 })
@@ -191,9 +207,9 @@ router.post('/changePrice', function (req, res, next) {
   var updateBookPrice = $sql.updateBookPrice
   conn.query(updateBookPrice, [params.price, params.bookId], function (err, result) {
     if (!err) {
-      res.json({ status: 200, message: '修改成功' })
+      res.json({ status: true, message: '修改成功' })
     } else {
-      res.json({ status: 404, message: '发生错误，请重试' })
+      res.json({ status: false, message: '发生错误，请重试' })
     }
   })
 })
