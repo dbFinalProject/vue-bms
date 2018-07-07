@@ -5,10 +5,11 @@ var sqlMap = {
   queryBooks: 'select * from reportory, book where reportory.bookId = book.bookId and reportory.count > 0',
   queryBook: 'select * from reportory, book where reportory.bookId = book.bookId and reportory.count > 0 and book.bookName like ?',
   queryReportoryBooks: 'select * from reportory, book where reportory.bookId = book.bookId',
-  queryReportoryBook: 'select * from reportory, book where reportory.bookId = book.bookId book.bookName like ?',
+  queryReportoryBook: 'select * from reportory, book where reportory.bookId = book.bookId and book.bookName like ?',
+  viewReportory: 'select * from reportory where bookId=? and count>=?',
   queryRankList: 'select saletable.bookId, bookName, bookInfo, sum(saleCount) as saleCount, sum(saleAmount) as saleAmount \
                   from saletable, book \
-                  where saletable.bookId = book.bookId \
+                  where saletable.bookId = book.bookId and Date(saleTime) >= ? and Date(saleTime) <= ? \
                   group by saletable.bookId \
                   order by sum(saleCount) desc',
   saleBook: 'update reportory set count=count-? where bookId=?',

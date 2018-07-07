@@ -17,12 +17,12 @@ router.get('/getBooks', function (req, res, next) {
   var params = querystring.parse(url.parse(req.url).query)
   if (params.bookName) {
     conn.query(sqlQueryBook, ['%' + params.bookName + '%'], function (err, result) {
-      console.log(err)
+      // console.log(err)
       res.json(result)
     })
   } else {
     conn.query(sqlQueryBooks, function (err, result) {
-      console.log(err)
+      // console.log(err)
       res.json(result)
     })
   }
@@ -45,12 +45,12 @@ router.get('/getReportory', function(req, res, next){
 })
 
 router.post('/sale', function (req, res, next) {
-  var sqlQueryReportoryBook = $sql.queryReportoryBook
+  var sqlViewReportory = $sql.viewReportory
   var sqlSaleBook = $sql.saleBook
   var sqlInsertSaleRecord = $sql.insertSaleRecord
   var params = req.body
   // 查看库存是否足够
-  conn.query(sqlQueryReportoryBook, [params.bookId, params.count], function (err, result) {
+  conn.query(sqlViewReportory, [params.bookId, params.count], function (err, result) {
     if (!err) {
       if (result.length) {
         // 插入一条销售记录
@@ -72,7 +72,6 @@ router.post('/sale', function (req, res, next) {
     } else {
       res.json({status: false, message: '发生错误，请重试'})
     }
-    console.log(err)
   })
 })
 
@@ -81,7 +80,7 @@ router.post('/return', function (req, res, next) {
   var sqlInsertReturnRecord = $sql.insertReturnRecord
   var sqlSaleBook = $sql.saleBook
   var params = req.body
-  console.log(params)
+  // console.log(params)
   // 查看是否有该用户的销售记录
   conn.query(sqlQuerySaleRecord, [params.bookId, params.customerName, params.count, params.bookId, params.customerName], function (err, result) {
     if (!err) {
@@ -112,7 +111,7 @@ router.post('/getStatistics', function (req, res, next) {
   var queryPurchaseTableByTime = $sql.queryPurchaseTableByTime
   var queryReturnRecordByTime = $sql.queryReturnRecordByTime
   var params = req.body
-  console.log(params)
+  // console.log(params)
   var data = {}
   // 销售情况
   conn.query(querySaleRecordByTime, [params.startTime, params.endTime], function (err, result) {
@@ -122,7 +121,7 @@ router.post('/getStatistics', function (req, res, next) {
         if (!err) {
           data['pBook'] = result
           conn.query(queryReturnRecordByTime, [params.startTime, params.endTime], function(err, result){
-            console.log(err)
+            // console.log(err)
             if(!err){
               data['rBook'] = result
               res.json(data)
@@ -215,10 +214,10 @@ router.post('/changePrice', function (req, res, next) {
 })
 
 // 获取排行榜
-router.get('/rankList', function (req, res, next) {
+router.post('/rankList', function (req, res, next) {
   var queryRankList = $sql.queryRankList
-
-  conn.query(queryRankList, function (err, result) {
+  var params = req.body
+  conn.query(queryRankList, [params.startTime, params.endTime], function (err, result) {
     if (!err) {
       // console.log(result)
       res.json(result)

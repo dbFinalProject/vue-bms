@@ -331,7 +331,10 @@ export default {
       // console.log(this.statisticsData)
     })
 
-    this.$http.get('/api/book/rankList').then(res => {
+    this.$http.post('/api/book/rankList', {
+      startTime: this.dateValue[0],
+      endTime: this.dateValue[1]
+    }).then(res => {
       this.rankList = res.data
     })
   },
@@ -374,6 +377,13 @@ export default {
           income: saleAmount,
           payoff: saleAmount - returnAmount - purchaseAmount
         }]
+      })
+
+      this.$http.post('/api/book/rankList', {
+        startTime: this.dateValue[0],
+        endTime: this.dateValue[1]
+      }).then(res => {
+        this.rankList = res.data
       })
     }
   }
