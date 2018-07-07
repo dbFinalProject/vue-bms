@@ -29,7 +29,7 @@ app.use('/server/uploads', express.static(path.join(__dirname, 'uploads')))
 var sessionConfig = {
   name: 'bms',
   secret: 'bms',
-  cookie: { maxAge: 60 * 60 * 1000 },
+  cookie: { maxAge: 60 * 60 * 1000 * 24 },
   store: new FileStore(),
   resave: false,
   saveUninitialized: true

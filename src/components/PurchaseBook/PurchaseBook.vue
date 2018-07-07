@@ -9,7 +9,7 @@
             <p>住址: {{ o[0].providerAddr }}</p>
             <p>联系方式: {{ o[0].providerPhone }} </p>
             <div slot="reference" class="name-wrapper" style="width : 100px; margin: auto">
-              <el-tag style="width: 100px; height: 50px; font-size: 30px; line-height: 50px; vertical-align: center">{{ o[0].providerName }}</el-tag>
+              <el-tag style="width: 170px; height: 40px; font-size: 25px; line-height: 40px; vertical-align: center">{{ o[0].providerName }}</el-tag>
             </div>
           </el-popover>
           <el-table
@@ -151,7 +151,7 @@
           purchaseAmount: this.form.count * this.form.qPrice
         }).then(res => {
           this.$message({
-            type: res.data.status ? 'success':'danger',
+            type: res.data.status ? 'success':'error',
             message: res.data.message
           })
         })

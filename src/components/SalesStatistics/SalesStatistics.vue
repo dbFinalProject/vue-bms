@@ -77,6 +77,65 @@
 				</el-table>
 			</el-collapse-item>
 
+			<el-collapse-item title="退购记录" name="退购记录">
+				<el-table
+					:data="rBookData">
+					<el-table-column
+						label="退购时间"
+						align="center">
+						<template slot-scope="scope">
+							<i class="el-icon-time"></i>
+        		  <span style="margin-left: 10px">{{ scope.row.returnTime ? scope.row.returnTime.slice(0, 16).replace('T', ' ') : scope.row.returnTime }}</span>
+						</template>
+					</el-table-column>
+					<el-table-column
+						label="图书名称"
+						align="center">
+						<template slot-scope="scope">
+							<el-popover trigger="hover" placement="top">
+								<p>书名: {{ scope.row.bookName }}</p>
+								<p>出版社: {{ scope.row.bookInfo }}</p>
+								<div slot="reference" class="name-wrapper">
+									<el-tag size="medium">{{ scope.row.bookName }}</el-tag>
+								</div>
+							</el-popover>
+						</template>
+					</el-table-column>
+
+					<el-table-column
+						label="退购数量"
+						align="center">
+						<template slot-scope="scope">
+        		  <span style="margin-left: 10px">{{ scope.row.returnCount }}</span>
+						</template>
+					</el-table-column>
+
+					<el-table-column
+						label="退购顾客"
+						align="center">
+						<template slot-scope="scope">
+							<span>{{ scope.row.customerName }}</span>
+						</template>
+					</el-table-column>
+
+					<el-table-column
+						label="单价"
+						align="center">
+						<template slot-scope="scope">
+        		  <span style="margin-left: 10px">{{ scope.row.price }}</span>
+						</template>
+					</el-table-column>
+
+					<el-table-column
+						label="总价"
+						align="center">
+						<template slot-scope="scope">
+        		  <span style="margin-left: 10px">{{ scope.row.returnAmount }}</span>
+						</template>
+					</el-table-column>
+				</el-table>
+			</el-collapse-item>
+
 			<el-collapse-item title="进货记录" name="进货记录">
 				<el-table 
 					:data="pBookData">
@@ -103,7 +162,7 @@
 					</el-table-column>
 
 					<el-table-column
-						label="进货量"
+						label="进货数量"
 						align="center">
 						<template slot-scope="scope">
         		  <span style="margin-left: 10px">{{ scope.row.purchaseCount }}</span>
@@ -185,6 +244,7 @@
 				dateValue: [new Date((new Date()).getTime() - 3600 * 1000 * 24 * 6), new Date()],
       	pBookData: [],
       	sBookData: [],
+      	rBookData: [],
       	statisticsData: [],
         pickerOptions: {
           shortcuts: [{
@@ -213,7 +273,7 @@
             }
           }]
 				},
-				activeNames: ['销售记录', '进货记录', '营业统计']
+				activeNames: ['销售记录', '退购记录', '进货记录', '营业统计']
 			}
 		},
 		created () {
@@ -221,10 +281,30 @@
 				startTime: new Date(this.dateValue[0]).format('yyyy-MM-dd'),
 				endTime: new Date(this.dateValue[1]).format('yyyy-MM-dd')
 			}).then((res)=>{
-					console.log(res.data["sBook"])
+				// console.log(res.data["sBook"])
 				this.sBookData = res.data["sBook"]
 				this.pBookData = res.data["pBook"]
+				this.rBookData = res.data["rBook"]
 				//this.statisticsData = res.data['sBook']
+				var saleAmount = 0, returnAmount = 0, purchaseAmount = 0
+				for(var index in this.sBookData) {
+					saleAmount += this.sBookData[index].saleAmount
+				}
+
+				for(var index in this.rBookData) {
+					returnAmount += this.rBookData[index].returnAmount
+				}
+
+				for(var index in this.pBookData) {
+					purchaseAmount += this.pBookData[index].purchaseAmount
+				}
+
+				this.statisticsData = [{
+					expense: returnAmount + purchaseAmount, 
+					income: saleAmount, 
+					payoff: saleAmount - returnAmount - purchaseAmount
+				}]
+				//console.log(this.statisticsData)
 			});
 		},
 		methods: {
@@ -243,7 +323,26 @@
 				}).then((res)=>{
 					this.sBookData = res.data["sBook"]
 					this.pBookData = res.data["pBook"]
-					//this.statisticsData = res.data['sBook']
+					this.rBookData = res.data["rBook"]
+					
+					var saleAmount = 0, returnAmount = 0, purchaseAmount = 0
+					for(var index in this.sBookData) {
+						saleAmount += this.sBookData[index].saleAmount
+					}
+
+					for(var index in this.rBookData) {
+						returnAmount += this.rBookData[index].returnAmount
+					}
+
+					for(var index in this.pBookData) {
+						purchaseAmount += this.pBookData[index].purchaseAmount
+					}
+
+					this.statisticsData = [{
+						expense: returnAmount + purchaseAmount, 
+						income: saleAmount, 
+						payoff: saleAmount - returnAmount - purchaseAmount
+					}]
 				})
 			}
 		}
@@ -259,10 +358,7 @@
 			position: fixed;
 			top: 70px;
 			width: 100%;
-
-			.el-date-picker{
-				width: 1000px;
-			}
+			z-index: 10;
 		}
 
 		.el-collapse{
