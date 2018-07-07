@@ -16,7 +16,7 @@
 
       <el-form-item>
         <span>请输入密码：</span>
-        <el-input name="password" type="password" @key.enter.native="handleLogin" placeholder="密码" v-model="loginForm.password" autoComplete="on" clearable />
+        <el-input name="password" type="password" @keyup.enter.native="handleLogin" placeholder="密码" v-model="loginForm.password" autoComplete="on" clearable />
       </el-form-item>
 
       <el-button type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin" :loading="loading">

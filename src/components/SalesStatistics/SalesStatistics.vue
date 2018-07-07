@@ -231,6 +231,29 @@
         </el-table>
       </el-collapse-item>
     </el-collapse>
+
+    <span class="demonstration">销售排行榜</span>
+    <el-carousel trigger="click" height="200px">
+      <el-carousel-item v-for="(item, index) in rankList" v-if="index<5" :key="item.bookId">
+        <el-card class="box-card">
+          <div class="clearfix">
+            <span>第{{ index+1 }}名</span>
+            <el-popover trigger="click" placement="top" style="display: inline-block; float: right; z-index: 2">
+                <p>图书编号: {{ item.bookId }}</p>
+                <p>出版社: {{ item.bookInfo }}</p>
+                <div slot="reference" class="name-wrapper">
+                  <el-button style="padding: 3px 0" type="text">详细信息</el-button>
+                </div>
+            </el-popover>
+          </div>
+          <div>
+            <p>名&nbsp;&nbsp;&nbsp;&nbsp;称：{{ item.bookName }}</p>
+            <p>销售量：{{ item.saleCount }}</p>
+            <p>销售额：{{ item.saleAmount }}</p>
+          </div>
+        </el-card>
+      </el-carousel-item>
+    </el-carousel>
   </div>
 </template>
 
@@ -244,6 +267,7 @@ export default {
       sBookData: [],
       rBookData: [],
       statisticsData: [],
+      rankList: [],
       pickerOptions: {
         shortcuts: [{
           text: '最近一周',
@@ -305,6 +329,10 @@ export default {
         payoff: saleAmount - returnAmount - purchaseAmount
       }]
       // console.log(this.statisticsData)
+    })
+
+    this.$http.get('/api/book/rankList').then(res => {
+      this.rankList = res.data
     })
   },
   methods: {
@@ -372,5 +400,22 @@ export default {
   }
   .el-table{
     width: 100%;
+  }
+  .demonstration{
+    width: 80%;
+    font-size: 14px;
+    display: inline-block;
+    height: 50px;
+    line-height: 50px;
+    vertical-align: center;
+  }
+  .el-carousel{
+    margin: auto;
+    width: 550px;
+    text-align: left;
+  }
+  .el-card{
+    height: 200px;
+    background-color: gainsboro;
   }
 </style>

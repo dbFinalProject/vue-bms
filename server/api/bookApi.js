@@ -29,16 +29,16 @@ router.get('/getBooks', function (req, res, next) {
 })
 
 router.get('/getReportory', function(req, res, next){
-  var QueryReportoryBooks = $sql.QueryReportoryBooks
-  var QueryReportoryBook = $sql.QueryReportoryBook
+  var queryReportoryBooks = $sql.queryReportoryBooks
+  var queryReportoryBook = $sql.queryReportoryBook
 
   var params = querystring.parse(url.parse(req.url).query)
   if (params.bookName) {
-    conn.query(QueryReportoryBook, ['%' + params.bookName + '%'], function (err, result) {
+    conn.query(queryReportoryBook, ['%' + params.bookName + '%'], function (err, result) {
       res.json(result)
     })
   } else {
-    conn.query(QueryReportoryBooks, function (err, result) {
+    conn.query(queryReportoryBooks, function (err, result) {
       res.json(result)
     })
   }
@@ -210,6 +210,20 @@ router.post('/changePrice', function (req, res, next) {
       res.json({ status: true, message: '修改成功' })
     } else {
       res.json({ status: false, message: '发生错误，请重试' })
+    }
+  })
+})
+
+// 获取排行榜
+router.get('/rankList', function (req, res, next) {
+  var queryRankList = $sql.queryRankList
+
+  conn.query(queryRankList, function (err, result) {
+    if (!err) {
+      // console.log(result)
+      res.json(result)
+    } else {
+      res.json({ status: false, message: '发生错误，请重试'})
     }
   })
 })
