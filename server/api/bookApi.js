@@ -29,16 +29,16 @@ router.get('/getBooks', function (req, res, next) {
 })
 
 router.post('/sale', function (req, res, next) {
-  var sqlQuerySaleBook = $sql.querySaleBook
+  var sqlQueryReportoryBook = $sql.queryReportoryBook
   var sqlSaleBook = $sql.saleBook
   var sqlInsertSaleRecord = $sql.insertSaleRecord
   var params = req.body
   // 查看库存是否足够
-  conn.query(sqlQuerySaleBook, [params.bookId, params.count], function (err, result) {
+  conn.query(sqlQueryReportoryBook, [params.bookId, params.count], function (err, result) {
     if (!err) {
       if (result.length) {
         // 插入一条销售记录
-        conn.query(sqlInsertSaleRecord, [params.bookId, new Date(), params.count, params.customerName], function (err, result) {
+        conn.query(sqlInsertSaleRecord, [params.bookId, new Date(), params.count, params.customerName, params.saleAmount], function (err, result) {
           if (!err) {
             // 卖出一本，修改库存
             conn.query(sqlSaleBook, [params.count, params.bookId], function (err, result) {
@@ -56,6 +56,7 @@ router.post('/sale', function (req, res, next) {
     } else {
       res.json({status: 404, message: '发生错误，请重试'})
     }
+    console.log(err)
   })
 })
 
@@ -70,7 +71,7 @@ router.post('/return', function (req, res, next) {
     if (!err) {
       if (result.length) {
         // 插入一条退货记录
-        conn.query(sqlInsertReturnRecord, [params.bookId, new Date(), params.count, params.customerName], function (err, result) {
+        conn.query(sqlInsertReturnRecord, [params.bookId, new Date(), params.count, params.customerName, params.returnAmount], function (err, result) {
           if (!err) {
             // 退货一本书，修改库存
             conn.query(sqlSaleBook, [0 - params.count, params.bookId], function (err, result) {
@@ -102,7 +103,7 @@ router.post('/getStatistics', function (req, res, next) {
       conn.query(querypurchaseTableByTime, [params.startTime, params.endTime], function (err, result) {
         if (!err) {
           data['pBook'] = result
-          console.log(data)
+          //console.log(data)
           res.json(data)
         } else {
           res.json({ status: 404, message: '发生错误，请重试' })
@@ -120,7 +121,15 @@ router.get('/getProviderInfo', function (req, res, next) {
   // 获得进货商的报价表
   conn.query(queryProviderInfo, [], function (err, result) {
     if (!err) {
-      res.json(result)
+      var data = []
+      for (var i = 0; i < result.length; ++i) {
+        if (!data[result[i].providerId - 1]) {
+          data[result[i].providerId - 1] = new Array(result[i])
+        } else {
+          data[result[i].providerId - 1].push(result[i])
+        }
+      }
+      res.json(data)
     } else {
       res.json({ status: 404, message: '发生错误，请重试' })
     }
@@ -128,23 +137,35 @@ router.get('/getProviderInfo', function (req, res, next) {
 })
 
 // 进货
-router.post('/buyBook', function (req, res, next) {
+router.post('/purchase', function (req, res, next) {
+  // console.log(req.body)
   var params = req.body
   var queryIsOwnBook = $sql.queryIsOwnBook
   var updateBookNum = $sql.updateBookNum
   var purchaseBook = $sql.purchaseBook
-  conn.query(purchaseBook, [params.providerId, params.bookId, params.purchaseTime, params.purchaseCount], function (err, result) {
+  var insertReportory = $sql.insertReportory
+  conn.query(purchaseBook, [params.providerId, params.bookId, new Date(params.purchaseTime), params.purchaseCount, params.purchaseAmount], function (err, result) {
     if (!err) {
       conn.query(queryIsOwnBook, [params.bookId], function (err, result) {
         if (!err) {
-          var bookNum = result[0].count
-          conn.query(updateBookNum, [params.purchaseCount + bookNum, params.bookId], function (err, result) {
-            if (!err) {
-              res.json(result)
-            } else {
-              res.json({ status: 404, message: '发生错误，请重试' })
-            }
-          })
+          if(result.length) {
+            var bookNum = result[0].count
+            conn.query(updateBookNum, [params.purchaseCount + bookNum, params.bookId], function (err, result) {
+                if (!err) {
+                  res.json({status: true, message: '购买成功'})
+                } else {
+                  res.json({ status: 404, message: '发生错误，请重试' })
+                }
+              })
+          } else {
+            conn.query(insertReportory, [params.bookId, 0, params.purchaseCount], function (err, result) {
+                if (!err) {
+                  res.json({status: true, message: '购买成功'})
+                } else {
+                  res.json({ status: 404, message: '发生错误，请重试' })
+                }
+              })  
+          }        
         } else {
           res.json({ status: 404, message: '发生错误，请重试' })
         }

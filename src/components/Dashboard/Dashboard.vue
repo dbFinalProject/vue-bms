@@ -11,7 +11,7 @@
       router>
       <el-menu-item index="CustomerService">用户服务</el-menu-item>
       <el-menu-item index="GetOwnBook">查看库存</el-menu-item>
-      <el-menu-item index="PurchaseBook">购买图书</el-menu-item>
+      <el-menu-item index="PurchaseBook">进购图书</el-menu-item>
       <el-menu-item index="SalesStatistics">营业额</el-menu-item>
       <el-menu-item index="Logout">退出</el-menu-item>
     </el-menu>
