@@ -73,7 +73,6 @@
         </el-form-item>
         <el-form-item label="进购数量" :label-width="formLabelWidth" prop="count">
           <el-input-number v-model="form.count" :min="1"></el-input-number>
-
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -152,7 +151,7 @@
           purchaseAmount: this.form.count * this.form.qPrice
         }).then(res => {
           this.$message({
-            type: 'success',
+            type: res.data.status ? 'success':'danger',
             message: res.data.message
           })
         })

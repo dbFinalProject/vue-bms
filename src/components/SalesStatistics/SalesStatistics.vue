@@ -1,29 +1,29 @@
 <!-- 数据统计页面  -->
 <template>
 	<div class="container">
-		<el-date-picker
-      v-model="dateValue"
-      type="daterange"
-      align="right"
-      unlink-panels
-			format="yyyy-MM-dd"
-			value-format="yyyy-MM-dd"
-      range-separator="至"
-      start-placeholder="开始日期"
-      end-placeholder="结束日期"
-			:default-time="['00:00:00', '23:59:59']"
-      :picker-options="pickerOptions"
-			@change="handleChangeDate">
-    </el-date-picker>
-
-		<el-button icon="el-icon-search" circle @click="Search"></el-button>
+		<div class="top-bar">
+			<el-date-picker
+				v-model="dateValue"
+				type="daterange"
+				align="right"
+				unlink-panels
+				format="yyyy-MM-dd"
+				value-format="yyyy-MM-dd"
+				range-separator="至"
+				start-placeholder="开始日期"
+				end-placeholder="结束日期"
+				:default-time="['00:00:00', '23:59:59']"
+				:picker-options="pickerOptions"
+				@change="handleChangeDate">
+			</el-date-picker>
+			<el-button icon="el-icon-search" circle @click="Search"></el-button>
+		</div>
 		<el-collapse v-model="activeNames" @change="handleChange">
 			<el-collapse-item title="销售记录" name="销售记录">
 				<el-table 
-					:data="sBookData">
+					:data="sBookData" style="margin: auto">
 					<el-table-column
 						label="销售时间"
-						width="180"
 						align="center">
 						<template slot-scope="scope">
 							<i class="el-icon-time"></i>
@@ -32,7 +32,6 @@
 					</el-table-column>
 					<el-table-column
 						label="销售书名"
-						width="250"
 						align="center">
 						<template slot-scope="scope">
 							<el-popover trigger="hover" placement="top">
@@ -46,7 +45,6 @@
 					</el-table-column>
 					<el-table-column
 						label="销售数量"
-						width="250"
 						align="center">
 						<template slot-scope="scope">
 							<span>{{ scope.row.saleCount }}</span>
@@ -54,7 +52,6 @@
 					</el-table-column>
 					<el-table-column
 						label="顾客名字"
-						width="180"
 						align="center">
 						<template slot-scope="scope">
 							<span>{{ scope.row.customerName }}</span>
@@ -63,7 +60,6 @@
 
 					<el-table-column
 						label="单价"
-						width="250"
 						align="center">
 						<template slot-scope="scope">
         		  <span style="margin-left: 10px">{{ scope.row.price }}</span>
@@ -72,7 +68,6 @@
 
 					<el-table-column
 						label="总价"
-						width="250"
 						align="center">
 						<template slot-scope="scope">
         		  <span style="margin-left: 10px">{{ scope.row.saleAmount }}</span>
@@ -87,7 +82,6 @@
 					:data="pBookData">
 					<el-table-column
 						label="进货时间"
-						width="180"
 						align="center">
 						<template slot-scope="scope">
 							<i class="el-icon-time"></i>
@@ -96,7 +90,6 @@
 					</el-table-column>
 					<el-table-column
 						label="图书名称"
-						width="250"
 						align="center">
 						<template slot-scope="scope">
 							<el-popover trigger="hover" placement="top">
@@ -111,7 +104,6 @@
 
 					<el-table-column
 						label="进货量"
-						width="250"
 						align="center">
 						<template slot-scope="scope">
         		  <span style="margin-left: 10px">{{ scope.row.purchaseCount }}</span>
@@ -120,7 +112,6 @@
 
 					<el-table-column
 						label="进货商"
-						width="180"
 						align="center">
 						<template slot-scope="scope">
 							<el-popover trigger="hover" placement="top">
@@ -136,7 +127,6 @@
 
 					<el-table-column
 						label="单价"
-						width="250"
 						align="center">
 						<template slot-scope="scope">
         		  <span style="margin-left: 10px">{{ scope.row.qPrice }}</span>
@@ -145,7 +135,6 @@
 
 					<el-table-column
 						label="总价"
-						width="250"
 						align="center">
 						<template slot-scope="scope">
         		  <span style="margin-left: 10px">{{ scope.row.purchaseAmount }}</span>
@@ -159,7 +148,6 @@
 					:data="statisticsData">
 					<el-table-column
 						label="总支出"
-						width="180"
 						align="center">
 						<template slot-scope="scope">
 							<span style="margin-left: 10px">{{ scope.row.expense }}</span>
@@ -168,7 +156,6 @@
 
 					<el-table-column
 						label="总收入"
-						width="250"
 						align="center">
 						<template slot-scope="scope">
 							<span>{{ scope.row.income }}</span>
@@ -177,7 +164,6 @@
 					
 					<el-table-column
 						label="盈利\亏损"
-						width="250"
 						align="center">
 						<template slot-scope="scope">
 							<div class="name-wrapper">
@@ -238,27 +224,27 @@
 					console.log(res.data["sBook"])
 				this.sBookData = res.data["sBook"]
 				this.pBookData = res.data["pBook"]
-				this.statisticsData = res.data['sBook']
+				//this.statisticsData = res.data['sBook']
 			});
 		},
 		methods: {
 			handleChangeDate(date){
-				if(date === null)
-					date = [new Date((new Date()).getTime() - 3600 * 1000 * 24 * 6).format('yyyy-MM-dd'), new Date().format('yyyy-MM-dd')]
-				this.$http.post('/api/book/getStatistics', {
-					startTime: date[0],
-					endTime: date[1]
-				}).then((res)=>{
-					this.sBookData = res.data["sBook"]
-					this.pBookData = res.data["pBook"]
-					this.statisticsData = res.data['sBook']
-				})
+				// null
 			},
 			handleChange(val) {
 				// null
 			},
 			Search() {
-				// null
+				if(this.dateValue === null)
+					this.dateValue = [new Date((new Date()).getTime() - 3600 * 1000 * 24 * 6).format('yyyy-MM-dd'), new Date().format('yyyy-MM-dd')]
+				this.$http.post('/api/book/getStatistics', {
+					startTime: this.dateValue[0],
+					endTime: this.dateValue[1]
+				}).then((res)=>{
+					this.sBookData = res.data["sBook"]
+					this.pBookData = res.data["pBook"]
+					//this.statisticsData = res.data['sBook']
+				})
 			}
 		}
 	};
@@ -268,25 +254,28 @@
 	.container{
 		padding-left: 50px;
 		padding-right: 50px;
-	}
 
-	.el-date-picker{
-		width: 1000px;
-	}
+		.top-bar{
+			position: fixed;
+			top: 70px;
+			width: 100%;
 
-	.el-carousel__item h3 {
-    color: #475669;
-    font-size: 14px;
-    opacity: 0.75;
-    line-height: 200px;
-    margin: 0;
-  }
-  
-  .el-carousel__item:nth-child(2n) {
-    background-color: #99a9bf;
-  }
-  
-  .el-carousel__item:nth-child(2n+1) {
-    background-color: #d3dce6;
-  }
+			.el-date-picker{
+				width: 1000px;
+			}
+		}
+
+		.el-collapse{
+			margin-top: 45px;
+
+			.el-collapse-item{
+				width: 80%;
+				margin: auto;
+
+				.el-table{
+					width: 100%;
+				}
+			}
+		}
+	}
 </style>

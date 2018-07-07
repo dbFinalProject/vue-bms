@@ -176,4 +176,17 @@ router.post('/purchase', function (req, res, next) {
   })
 })
 
+ // 更新价格
+ router.get('/changePrice', function (req, res, next) {
+  var params = req.body
+  var updateBookPrice = $sql.updateBookPrice
+  conn.query(updateBookPrice, [params.price, params.boookId], function (err, result) {
+    if (!err) {
+      res.json({ status: 200, message: '修改成功' })
+    } else {
+      res.json({ status: 404, message: '发生错误，请重试' })
+    }
+  })
+})
+
 module.exports = router
