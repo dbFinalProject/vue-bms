@@ -2,7 +2,7 @@
 <template>
   <div>
     <div v-for="o in providerInfo" :key="o[0].providerId" class="text item">
-      <el-card class="box-card" >
+      <el-card class="box-card">
         <div class="clearfix">
           <el-popover trigger="hover" placement="top">
             <p>姓名: {{ o[0].providerName }}</p>
@@ -59,7 +59,6 @@
         </div>
       </el-card>
     </div>
-
     <el-dialog :title="dialogFormTitle" :visible.sync="dialogFormVisible">
       <el-form :model="form" ref="ruleForm" :rules="rules">
         <el-form-item label="进购商" :label-width="formLabelWidth" prop="providerName">
@@ -129,6 +128,7 @@ export default {
   created () {
     this.$http.get('/api/book/getProviderInfo').then((res) => {
       this.providerInfo = res.data
+      console.log(this.providerInfo)
     })
   },
   methods: {
@@ -193,5 +193,6 @@ export default {
 
   .box-card {
     width: 100%;
+    height: 100%;
   }
 </style>
