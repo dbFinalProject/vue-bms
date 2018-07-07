@@ -235,7 +235,7 @@
 				startTime: new Date(this.dateValue[0]).format('yyyy-MM-dd'),
 				endTime: new Date(this.dateValue[1]).format('yyyy-MM-dd')
 			}).then((res)=>{
-					console.log(res.data["sBook"])
+				console.log(res.data["sBook"])
 				this.sBookData = res.data["sBook"]
 				this.pBookData = res.data["pBook"]
 				this.statisticsData = res.data['sBook']

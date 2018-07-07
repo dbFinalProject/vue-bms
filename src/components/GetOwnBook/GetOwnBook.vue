@@ -43,7 +43,7 @@
         width="180"
         align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.bookNum }}</span>
+          <span>{{ scope.row.count }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -61,25 +61,18 @@
           <el-button
             size="mini"
             type="success"
-            @click="handlePurchase(scope.$index, scope.row)">购买</el-button>
-          <el-button
-            size="mini"
-            type="danger"
-            @click="handleReturn(scope.$index, scope.row)">退购</el-button>
+            @click="handleChangePrice(scope.$index, scope.row)">修改售价</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <el-dialog :title="dialogFormTitle" :visible.sync="dialogFormVisible">
       <el-form :model="form" ref="ruleForm" :rules="rules">
-        <el-form-item label="顾客姓名" :label-width="formLabelWidth" prop="customerName">
-          <el-input v-model="form.customerName" auto-complete="off"></el-input>
+        <el-form-item prop="bookName">
+          <el-tag type="success">{{ form.bookName }}</el-tag>
         </el-form-item>
-        <el-form-item label="书本名称" :label-width="formLabelWidth" prop="bookName">
-          <el-input v-model="form.bookName" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="数量" :label-width="formLabelWidth" prop="count">
-          <el-input v-model="form.count" auto-complete="off"></el-input>
+        <el-form-item prop="price">
+          <el-input-number v-model="form.price" :precision="2" :step="0.1" :min="0" :max="10000"></el-input-number>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -96,24 +89,17 @@ export default {
     return {
       tableData: [],
       searchedBook: '',
-      formLabelWidth: '120px',
       dialogFormVisible: false,
       dialogFormTitle: '',
       form: {
         bookId: '',
-        customerName: '',
+        price: '0',
         bookName: '',
-        count: ''
+        count: '0'
       },
       rules: {
-        customerName: [
-          {required: true, message: '请输入顾客姓名', trigger: 'blur'}
-        ],
-        bookName: [
-          {required: true, message: '请输入图书名称', trigger: 'blur'}
-        ],
-        count: [
-          {required: true, message: '请输入图书数量', trigger: 'blur'}
+        price: [
+          {required: true, message: '请输入正确的价格', trigger: 'blur'}
         ]
       }
     }
@@ -132,58 +118,36 @@ export default {
           this.tableData = res.data
         })
     },
-    handlePurchase (index, row) {
-      this.dialogFormTitle = '购买图书'
+    handleChangePrice (index, row) {
+      this.dialogFormTitle = '修改图书售价'
       this.dialogFormVisible = true
       this.form.bookId = row.bookId
       this.form.bookName = row.bookName
-      this.form.count = 1
-    },
-    handleReturn (index, row) {
-      // console.log(index, row);
-      this.dialogFormTitle = '退购图书'
-      this.dialogFormVisible = true
-      this.form.bookId = row.bookId
-      this.form.bookName = row.bookName
-      this.form.count = 1
+      this.form.price = row.price
     },
     cancel () {
       this.dialogFormVisible = false
     },
     confirm () {
       var that = this
-      // 检验表单
-      this.$refs['ruleForm'].validate((valid) => {
-        if (valid) {
-          // post表单信息，进行销售操作或者退货操作
-          var url = ''
-          if (that.dialogFormTitle === '购买图书') {
-            url = '/api/book/sale'
-          } else {
-            url = '/api/book/return'
-          }
-          that.$http.post(url, {
-            bookId: that.form.bookId,
-            count: that.form.count,
-            customerName: that.form.customerName
-          }).then((res) => {
-            // 销售或退货成功之后进行数据更新
-            if (res.status === 200 && res.data.status !== 404) {
-              that.$http.get('/api/book/getBooks')
-                .then((res) => {
-                  that.tableData = res.data
-                  that.dialogFormVisible = false
-                  that.$message({
-                    type: 'success',
-                    message: this.dialogFormTitle === '购买图书' ? '购买成功' : '退订成功'
-                  })
-                })
-            } else {
+      that.$http.post('/api/book/changePrice', {
+        bookId: that.form.bookId,
+        price: that.form.price
+      }).then((res) => {
+        if (res.status === 200 && res.data.status !== 404) {
+          that.$http.get('/api/book/getBooks')
+            .then((res) => {
+              that.tableData = res.data
+              that.dialogFormVisible = false
               that.$message({
-                type: 'error',
-                message: res.data.message
+                type: 'success',
+                message: '更新成功'
               })
-            }
+            })
+        } else {
+          that.$message({
+            type: 'error',
+            message: res.data.message
           })
         }
       })
