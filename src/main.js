@@ -11,7 +11,6 @@ import 'element-ui/lib/theme-chalk/index.css'
 Vue.use(Element)
 Vue.config.productionTip = false
 
-
 // Vue.prototype.setCookie = (username, password, expiredays) => {
 //   // document.cookie = username+"="+escape(password)
 //   var exdate = new Date()

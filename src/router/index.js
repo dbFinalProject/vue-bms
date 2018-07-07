@@ -48,27 +48,27 @@ const routes = [
     path: '/*',
     redirect: '/Dashboard/CustomerService'
   }
-];
+]
 
 const router = new Router({
   routes
-});
+})
 
 // 这个是请求页面路由的时候会验证token存不存在，不存在的话会到登录页
 router.beforeEach((to, from, next) => {
-  if(to.meta.requireAuth) {
+  if (to.meta.requireAuth) {
     axios.get('/api/user/login').then(res => {
-      if(res.data.status === true) {
-        next();
+      if (res.data.status === true) {
+        next()
       } else {
         next({
           path: '/login',
           query: {redirect: to.fullPath}
-        });
+        })
       }
-    });
+    })
   } else {
-    //console.log("login")
+    // console.log("login")
     next()
   }
 })

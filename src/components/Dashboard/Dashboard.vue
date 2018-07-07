@@ -25,11 +25,11 @@ export default {
     }
   },
   created () {
-    //this.$router.replace({path: '/Dashboard/' + this.selected })
+    // this.$router.replace({path: '/Dashboard/' + this.selected })
   },
   methods: {
     handleSelect (key, keyPath) {
-      console.log(this.$route.path)
+      // console.log(this.$route.path)
       if (key === 'Logout') {
         this.$router.replace({path: '/login'})
         this.$http.get('/api/user/logout')
@@ -41,7 +41,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style>
   .el-menu{
     width: 100%;
     margin: 0px;

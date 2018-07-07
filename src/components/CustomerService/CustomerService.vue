@@ -95,13 +95,14 @@
 export default {
   data () {
     const checkCount = (rule, count, callback) => {
-      let reg = /^[1-9]\d*$/;
-      var _this = this;
-      console.log(count)
-      if (new RegExp(reg).test(count) === true) {
+      if (new RegExp(/^[1-9]\d*$/).test(count) === true) {
         callback()
-      } else { 
+      } else if (new RegExp(/^[1-9]\d*.[0-9]\d*$/).test(count) === true) {
+        callback(new Error('请输入整数'))
+      } else if (count <= 0) {
         callback(new Error('图书数量至少为1'))
+      } else {
+        callback(new Error('请输入正确的图书数量'))
       }
     }
     return {
@@ -114,7 +115,7 @@ export default {
         bookId: '',
         customerName: '',
         bookName: '',
-        count: '',
+        count: 1,
         price: ''
       },
       rules: {
@@ -126,24 +127,21 @@ export default {
         ],
         count: [
           {required: true, message: '请输入图书数量', trigger: 'blur'},
-          {type: 'number', validator: checkCount, trigger: 'blur'}
+          {validator: checkCount, trigger: 'blur'}
         ]
       }
     }
   },
   created () {
-    this.$http.get('/api/book/getBooks')
-      .then((res) => {
-        this.tableData = res.data
-      })
+    this.$http.get('/api/book/getBooks').then((res) => {
+      this.tableData = res.data
+    })
   },
   methods: {
     handleSearchBook () {
-      this.$http.get('/api/book/getBooks?bookName=' + this.searchedBook)
-        .then((res) => {
-          // console.log(res)
-          this.tableData = res.data
-        })
+      this.$http.get('/api/book/getBooks?bookName=' + this.searchedBook).then((res) => {
+        this.tableData = res.data
+      })
     },
     handlePurchase (index, row) {
       this.dialogFormTitle = '购买图书'
@@ -156,7 +154,6 @@ export default {
       }
     },
     handleReturn (index, row) {
-      // console.log(index, row);
       this.dialogFormTitle = '退购图书'
       this.dialogFormVisible = true
       this.form = {
@@ -171,15 +168,15 @@ export default {
     },
     confirm () {
       var that = this
-      console.log(this.form)
       // 检验表单
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
           // post表单信息，进行销售操作或者退货操作
-          var url = '', params = {
+          var url = ''
+          var params = {
             'bookId': that.form.bookId,
             'count': that.form.count,
-            'customerName': that.form.customerName,
+            'customerName': that.form.customerName
           }
           if (that.dialogFormTitle === '购买图书') {
             url = '/api/book/sale'
@@ -188,10 +185,10 @@ export default {
             url = '/api/book/return'
             params['returnAmount'] = that.form.count * that.form.price
           }
-          console.log(params)
+          // console.log(params)
           that.$http.post(url, params).then((res) => {
             // 销售或退货成功之后进行数据更新
-            if (res.status === 200 && res.data.status !== 404) {
+            if (res.status === 200 && res.data.status !== false) {
               that.$http.get('/api/book/getBooks')
                 .then((res) => {
                   that.tableData = res.data
@@ -215,7 +212,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style>
   .searchInput{
     position: fixed;
     top: 70px;
@@ -228,4 +225,3 @@ export default {
     margin-top: 45px;
   }
 </style>
-

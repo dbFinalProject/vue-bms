@@ -16,7 +16,7 @@
 
       <el-form-item>
         <span>请输入密码：</span>
-        <el-input name="password" type="password" @key.enter.native="handleLogin" placeholder="密码" v-model="loginForm.password" autoComplete="on" clearable />
+        <el-input name="password" type="password" @keyup.enter.native="handleLogin" placeholder="密码" v-model="loginForm.password" autoComplete="on" clearable />
       </el-form-item>
 
       <el-button type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin" :loading="loading">
@@ -51,12 +51,12 @@ export default {
         username: this.loginForm.username,
         password: this.loginForm.password
       }).then((res) => {
-        console.log(res.data)
+        // console.log(res.data)
         this.loading = false
         if (res.status === 200 && res.data.status === true) {
-          //let expireDays = 1000 * 60 * 60
+          // let expireDays = 1000 * 60 * 60
           this.$router.push({path: '/Dashboard/CustomerService'})
-          //this.setCookie(this.loginForm.username, this.loginForm.password, expireDays)
+          // this.setCookie(this.loginForm.username, this.loginForm.password, expireDays)
           this.$message({
             type: 'success',
             message: res.data.message
@@ -75,77 +75,71 @@ export default {
 }
 </script>
 
-<style rel="stylesheet/scss" lang="scss">
-  $bg: rgba(0,0,0,0.05);
-  $input_text: #000;
-  $dark_gray: 889aa4;
-  $light_gray: #eee;
-
+<style rel="stylesheet/scss">
   .login-container {
     position: fixed;
     height: 100%;
     width : 100%;
     background-size: cover;
+  }
 
-    .login-form{
-      position: absolute;
-      border-radius: 10px;
-      left: 0;
-      right: 0;
-      width: 400px;
-      background-color: $bg;
-      padding: 35px 35px 15px 35px;
-      margin: 120px auto;
-    }
+  .login-form{
+    position: absolute;
+    border-radius: 10px;
+    left: 0;
+    right: 0;
+    width: 400px;
+    background-color: rgba(0,0,0,0.05);
+    padding: 35px 35px 15px 35px;
+    margin: 120px auto;
+  }
 
-    .el-form-item {
-      border: 1px solid rgba(211, 55, 55, 0.1);
-      background: $bg;
-      border-radius: 5px;
-      color: #454545;
-      span{
-        display: block;
-        width: 100px;
-        font-size: 10px;
-        line-height: 2em;
-        text-align: left;
-        padding-left: 5px;
-      }
-    }
+  .el-form-item {
+    border: 1px solid rgba(211, 55, 55, 0.1);
+    background: rgba(0,0,0,0.05);
+    border-radius: 5px;
+    color: #454545;
+  }
+  .el-form-item span{
+    display: block;
+    width: 100px;
+    font-size: 10px;
+    line-height: 2em;
+    text-align: left;
+    padding-left: 5px;
+  }
 
-    .el-input {
-      display: block;
-      height: 47px;
-      width: 100%;
-    }
+  .el-input {
+    display: block;
+    height: 47px;
+    width: 100%;
+  }
 
-    .image-center {
-      clear: right;
-      text-align: center;
-      img{
-        width: 100px;
-        height: 100px;
-      }
-    }
+  .image-center {
+    clear: right;
+    text-align: center;
+  }
+  .image-center img{
+    width: 100px;
+    height: 100px;
+  }
+  .err-font{
+    text-align: left;
+    color: rgb(255, 80, 74);
+    font-size: 12px;
+    line-height: 1.5;
+    margin-top: -22px;
+    margin-bottom: 0px;
+    position: absolute;
+  }
 
-    .err-font{
-      text-align: left;
-      color: rgb(255, 80, 74);
-      font-size: 12px;
-      line-height: 1.5;
-      margin-top: -22px;
-      margin-bottom: 0px;
-      position: absolute;
-    }
-
-    .sign-text{
-      color: #777;
-      display: block;
-      font-size: 15px;
-      font-style: normal;
-      position: relative;
-      text-align: center;
-      margin-bottom: 10px;
-    }
+  .sign-text{
+    color: #777;
+    display: block;
+    font-size: 15px;
+    font-style: normal;
+    position: relative;
+    text-align: center;
+    margin-bottom: 10px;
   }
 </style>

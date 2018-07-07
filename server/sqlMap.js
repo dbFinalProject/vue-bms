@@ -2,9 +2,15 @@
 var sqlMap = {
   // 用户
   queryAdmin: 'select * from admin where userName=? and userPassword=?',
-  queryBooks: 'select * from reportory, book where reportory.bookId = book.bookId',
-  queryBook: 'select * from reportory, book where reportory.bookId = book.bookId and book.bookName like ?',
-  queryReportoryBook: 'select * from reportory where bookId=? and count>=?',
+  queryBooks: 'select * from reportory, book where reportory.bookId = book.bookId and reportory.count > 0',
+  queryBook: 'select * from reportory, book where reportory.bookId = book.bookId and reportory.count > 0 and book.bookName like ?',
+  queryReportoryBooks: 'select * from reportory, book where reportory.bookId = book.bookId',
+  queryReportoryBook: 'select * from reportory, book where reportory.bookId = book.bookId book.bookName like ?',
+  queryRankList: 'select saletable.bookId, bookName, bookInfo, sum(saleCount) as saleCount, sum(saleAmount) as saleAmount \
+                  from saletable, book \
+                  where saletable.bookId = book.bookId \
+                  group by saletable.bookId \
+                  order by sum(saleCount) desc',
   saleBook: 'update reportory set count=count-? where bookId=?',
   insertSaleRecord: 'insert into saleTable values(?, ?, ?, ?, ?)',
   querySaleRecord: 'select * from saleTable where bookId=? and customerName=? and saleCount-? >= (select ifnull(sum(returnCount),0) from returnTable where  bookId=? and customerName=?)',

@@ -80,86 +80,98 @@
         <el-button type="primary" @click="confirm">确 定</el-button>
       </div>
     </el-dialog>
-  </div>    
+  </div>
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        providerInfo: [],
-        dialogFormTitle: '进购图书',
-        dialogFormVisible: false,
-        formLabelWidth: '120px',
-        form: {
-          providerName: '',
-          bookId: '',
-          qPrice: '',
-          bookName: '',
-          count: '',
-        },
-        rules: {
-          providerName: [
-            {required: true, message: '请输入供应商名称', trigger: 'blur'}
-          ],
-          bookName: [
-            {required: true, message: '请输入图书名称', trigger: 'blur'}
-          ],
-          qbook: [
-            {required: true, message: '请输入图书报价', trigger: 'blur'}
-          ],
-          count: [
-            {required: true, message: '请输入图书数量', trigger: 'blur'}
-          ]
-        }
-			}
-		},
-		created () {
-			this.$http.get('/api/book/getProviderInfo').then((res)=>{
-        this.providerInfo = res.data;
-			});
-		},
-    methods: {
-      handlePurchase(index, row) {
-        this.dialogFormVisible = true
-        this.form = {
-          providerName: row.providerName,
-          providerId: row.providerId,
-          bookId: row.bookId,
-          qPrice: row.qPrice,
-          bookName: row.bookName,
-          count: 1,
-        }
-      },
-      cancel(){
-        this.dialogFormVisible = false
-        this.form = {
-          providerName: "",
-          bookId: "",
-          qPrice: "",
-          bookName: "",
-          count: 1
-        }
-      },
-      confirm(){
-        this.dialogFormVisible = false
-        this.$http.post('/api/book/purchase', {
-          providerId: this.form.providerId,
-          bookId: this.form.bookId,
-          purchaseTime: new Date(),
-          purchaseCount: this.form.count,
-          purchaseAmount: this.form.count * this.form.qPrice
-        }).then(res => {
-          this.$message({
-            type: res.data.status ? 'success':'error',
-            message: res.data.message
-          })
-        })
+export default {
+  data () {
+    const checkCount = (rule, count, callback) => {
+      if (new RegExp(/^[1-9]\d*$/).test(count) === true) {
+        callback()
+      } else if (new RegExp(/^[1-9]\d*.[0-9]\d*$/).test(count) === true) {
+        callback(new Error('请输入整数'))
+      } else if (count <= 0) {
+        callback(new Error('图书数量至少为1'))
+      } else {
+        callback(new Error('请输入正确的图书数量'))
       }
     }
+    return {
+      providerInfo: [],
+      dialogFormTitle: '进购图书',
+      dialogFormVisible: false,
+      formLabelWidth: '120px',
+      form: {
+        providerName: '',
+        bookId: '',
+        qPrice: '',
+        bookName: '',
+        count: ''
+      },
+      rules: {
+        providerName: [
+          {required: true, message: '请输入供应商名称', trigger: 'blur'}
+        ],
+        bookName: [
+          {required: true, message: '请输入图书名称', trigger: 'blur'}
+        ],
+        qbook: [
+          {required: true, message: '请输入图书报价', trigger: 'blur'}
+        ],
+        count: [
+          {required: true, message: '请输入图书数量', trigger: 'blur'},
+          {validator: checkCount, trigger: 'blur'}
+        ]
+      }
+    }
+  },
+  created () {
+    this.$http.get('/api/book/getProviderInfo').then((res) => {
+      this.providerInfo = res.data
+    })
+  },
+  methods: {
+    handlePurchase (index, row) {
+      this.dialogFormVisible = true
+      this.form = {
+        providerName: row.providerName,
+        providerId: row.providerId,
+        bookId: row.bookId,
+        qPrice: row.qPrice,
+        bookName: row.bookName,
+        count: 1
+      }
+    },
+    cancel () {
+      this.dialogFormVisible = false
+      this.form = {
+        providerName: '',
+        bookId: '',
+        qPrice: '',
+        bookName: '',
+        count: 1
+      }
+    },
+    confirm () {
+      this.dialogFormVisible = false
+      this.$http.post('/api/book/purchase', {
+        providerId: this.form.providerId,
+        bookId: this.form.bookId,
+        purchaseTime: new Date(),
+        purchaseCount: this.form.count,
+        purchaseAmount: this.form.count * this.form.qPrice
+      }).then(res => {
+        this.$router.push('/Dashboard/GetOwnBook')
+        this.$message({
+          type: res.data.status ? 'success' : 'error',
+          message: res.data.message
+        })
+      })
+    }
   }
+}
 </script>
-
 
 <style>
   .text {
