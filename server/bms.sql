@@ -58,6 +58,7 @@ create table quotedPrice(
 	providerId int not null,
 	bookId int not null,
 	qPrice double default 0,
+	primary key(providerId, bookId),
 	foreign key(providerId) references provider(providerId),
 	foreign key(bookId) references book(bookId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
