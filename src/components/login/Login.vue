@@ -59,12 +59,12 @@ export default {
           //this.setCookie(this.loginForm.username, this.loginForm.password, expireDays)
           this.$message({
             type: 'success',
-            message: '登陆成功'
+            message: res.data.message
           })
         } else {
           this.$message({
             type: 'error',
-            message: '登陆失败，请检查用户名或密码！'
+            message: res.data.message
           })
         }
       }).catch((err) => {
