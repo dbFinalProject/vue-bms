@@ -8,8 +8,8 @@
             <p>姓名: {{ o[0].providerName }}</p>
             <p>住址: {{ o[0].providerAddr }}</p>
             <p>联系方式: {{ o[0].providerPhone }} </p>
-            <div slot="reference" class="name-wrapper">
-              <el-tag size="medium">{{ o[0].providerName }}</el-tag>
+            <div slot="reference" class="name-wrapper" style="width : 100px; margin: auto">
+              <el-tag style="width: 100px; height: 50px; font-size: 30px; line-height: 50px; vertical-align: center">{{ o[0].providerName }}</el-tag>
             </div>
           </el-popover>
           <el-table
@@ -52,13 +52,35 @@
                     size="mini"
                     type="danger"
                     align="center"
-                    @click="handleDelete(scope.$index, scope.row)">购入</el-button>
+                    @click="handlePurchase(scope.$index, scope.row)">购入</el-button>
                 </template>
               </el-table-column>
           </el-table>
         </div>
       </el-card>
     </div>
+
+    <el-dialog :title="dialogFormTitle" :visible.sync="dialogFormVisible">
+      <el-form :model="form" ref="ruleForm" :rules="rules">
+        <el-form-item label="进购商" :label-width="formLabelWidth" prop="providerName">
+          <el-input v-model="form.providerName" auto-complete="off" readonly="true"></el-input>
+        </el-form-item>
+        <el-form-item label="书本名称" :label-width="formLabelWidth" prop="bookName">
+          <el-input v-model="form.bookName" auto-complete="off" readonly="true"></el-input>
+        </el-form-item>
+        <el-form-item label="书本单价" :label-width="formLabelWidth" prop="qPrice">
+          <el-input v-model="form.qPrice" auto-complete="off" readonly="true"></el-input>
+        </el-form-item>
+        <el-form-item label="进购数量" :label-width="formLabelWidth" prop="count">
+          <el-input-number v-model="form.count" :min="1"></el-input-number>
+
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancel">取 消</el-button>
+        <el-button type="primary" @click="confirm">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>    
 </template>
 
@@ -66,21 +88,74 @@
   export default {
     data() {
       return {
-        providerInfo: []
+        providerInfo: [],
+        dialogFormTitle: '进购图书',
+        dialogFormVisible: false,
+        formLabelWidth: '120px',
+        form: {
+          providerName: '',
+          bookId: '',
+          qPrice: '',
+          bookName: '',
+          count: '',
+        },
+        rules: {
+          providerName: [
+            {required: true, message: '请输入供应商名称', trigger: 'blur'}
+          ],
+          bookName: [
+            {required: true, message: '请输入图书名称', trigger: 'blur'}
+          ],
+          qbook: [
+            {required: true, message: '请输入图书报价', trigger: 'blur'}
+          ],
+          count: [
+            {required: true, message: '请输入图书数量', trigger: 'blur'}
+          ]
+        }
 			}
 		},
 		created () {
 			this.$http.get('/api/book/getProviderInfo').then((res)=>{
-        console.log(res.data);
         this.providerInfo = res.data;
 			});
 		},
     methods: {
-      handleEdit(index, row) {
-        console.log(index, row);
+      handlePurchase(index, row) {
+        this.dialogFormVisible = true
+        this.form = {
+          providerName: row.providerName,
+          providerId: row.providerId,
+          bookId: row.bookId,
+          qPrice: row.qPrice,
+          bookName: row.bookName,
+          count: 1,
+        }
       },
-      handleDelete(index, row) {
-        console.log(index, row);
+      cancel(){
+        this.dialogFormVisible = false
+        this.form = {
+          providerName: "",
+          bookId: "",
+          qPrice: "",
+          bookName: "",
+          count: 1
+        }
+      },
+      confirm(){
+        this.dialogFormVisible = false
+        this.$http.post('/api/book/purchase', {
+          providerId: this.form.providerId,
+          bookId: this.form.bookId,
+          purchaseTime: new Date(),
+          purchaseCount: this.form.count,
+          purchaseAmount: this.form.count * this.form.qPrice
+        }).then(res => {
+          this.$message({
+            type: 'success',
+            message: res.data.message
+          })
+        })
       }
     }
   }

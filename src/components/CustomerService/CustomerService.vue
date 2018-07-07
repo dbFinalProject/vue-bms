@@ -43,7 +43,7 @@
         width="180"
         align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.bookNum }}</span>
+          <span>{{ scope.row.count }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -68,7 +68,7 @@
           <el-input v-model="form.customerName" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="书本名称" :label-width="formLabelWidth" prop="bookName">
-          <el-input v-model="form.bookName" auto-complete="off"></el-input>
+          <el-input v-model="form.bookName" auto-complete="off" readonly="true"></el-input>
         </el-form-item>
         <el-form-item label="数量" :label-width="formLabelWidth" prop="count">
           <el-input v-model="form.count" auto-complete="off"></el-input>
@@ -95,7 +95,8 @@ export default {
         bookId: '',
         customerName: '',
         bookName: '',
-        count: ''
+        count: '',
+        price: '',
       },
       rules: {
         customerName: [
@@ -130,6 +131,7 @@ export default {
       this.form.bookId = row.bookId
       this.form.bookName = row.bookName
       this.form.count = 1
+      this.form.price = row.price
     },
     handleReturn (index, row) {
       // console.log(index, row);
@@ -138,27 +140,32 @@ export default {
       this.form.bookId = row.bookId
       this.form.bookName = row.bookName
       this.form.count = 1
+      this.form.price = row.price
     },
     cancel () {
       this.dialogFormVisible = false
     },
     confirm () {
       var that = this
+      console.log(this.form)
       // 检验表单
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
           // post表单信息，进行销售操作或者退货操作
-          var url = ''
+          var url = '', params = {
+            'bookId': that.form.bookId,
+            'count': that.form.count,
+            'customerName': that.form.customerName,
+          }
           if (that.dialogFormTitle === '购买图书') {
             url = '/api/book/sale'
+            params['saleAmount'] = that.form.count * that.form.price
           } else {
             url = '/api/book/return'
+            params['returnAmount'] = that.form.count * that.form.price
           }
-          that.$http.post(url, {
-            bookId: that.form.bookId,
-            count: that.form.count,
-            customerName: that.form.customerName
-          }).then((res) => {
+          console.log(params)
+          that.$http.post(url, params).then((res) => {
             // 销售或退货成功之后进行数据更新
             if (res.status === 200 && res.data.status !== 404) {
               that.$http.get('/api/book/getBooks')
