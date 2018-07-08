@@ -38,9 +38,7 @@ router.post('/sale', function (req, res, next) {
     if (!err) {
       if (result.length) {
         // 插入一条销售记录、更新库存信息
-        var date = new Date()
-        date.setHours(date.getHours() + 8)
-        conn.query(callSaleBook, [params.bookId, params.count, date, params.customerName, params.saleAmount], function(err, result){
+        conn.query(callSaleBook, [params.bookId, params.count, new Date(), params.customerName, params.saleAmount], function(err, result){
           res.json(result)
         })
       } else {
@@ -62,9 +60,7 @@ router.post('/return', function (req, res, next) {
     if (!err) {
       if (result[0][0].saleTotalCount - result[1][0].returnTotalCount >= params.count) {
         // 插入一条退货记录、更新库存信息
-        var date = new Date()
-        date.setHours(date.getHours() + 8)
-        conn.query(callReturnBook, [params.bookId, params.count, date, params.customerName, params.returnAmount], function(err, result) {
+        conn.query(callReturnBook, [params.bookId, params.count, new Date(), params.customerName, params.returnAmount], function(err, result) {
           res.json(result)
         })
       } else {
@@ -81,7 +77,8 @@ router.post('/getStatistics', function (req, res, next) {
   var queryPurchaseTableByTime = $sql.queryPurchaseTableByTime
   var queryReturnRecordByTime = $sql.queryReturnRecordByTime
   var params = req.body
-  // console.log(params)
+  console.log(params)
+
   var data = {}
   // 销售情况
   conn.query(querySaleRecordByTime, [params.startTime, params.endTime], function (err, result) {
@@ -135,9 +132,7 @@ router.post('/purchase', function (req, res, next) {
   // console.log(req.body)
   var params = req.body
   var callPurchaseBook = $sql.callPurchaseBook
-  var date = new Date(params.purchaseTime)
-  date.setHours(date.getHours() + 8)
-  conn.query(callPurchaseBook, [params.providerId, params.bookId, date, params.purchaseCount, params.purchaseAmount], function(err, result) {
+  conn.query(callPurchaseBook, [params.providerId, params.bookId, new Date(params.purchaseTime), params.purchaseCount, params.purchaseAmount], function(err, result) {
     if (!err) {
       res.json({status: true, message: '购买成功, 请给图书定价'})
     } else {

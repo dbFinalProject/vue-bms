@@ -3,7 +3,6 @@
 // 引入编写好的api
 const userApi = require('./api/userApi')
 const bookApi = require('./api/bookApi')
-const managerApi = require('./api/managerApi')
 var cookieParser = require('cookie-parser')
 
 // 引入文件模块

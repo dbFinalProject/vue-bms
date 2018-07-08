@@ -6,6 +6,7 @@ module.exports = {
         password: 'dbFinalProject',
         database: 'bms',
         port: '3306',
-        multipleStatements: true
+        multipleStatements: true,
+        dateStrings: true
     }
 }
