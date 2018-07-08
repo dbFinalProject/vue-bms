@@ -1,30 +1,36 @@
-# bms-vue
+### 项目vue-bms
 
-> A Vue.js project
+#####项目运行环境
 
-## Build Setup
+* nodejs
+* mysql
 
-``` bash
-# install dependencies
-npm install
+##### 运行步骤：
 
-# serve with hot reload at localhost:8080
-npm run dev
+1. `项目根目录`下打开命令行程序(`cmd`等等)，安装项目需要的包
 
-# build for production with minification
-npm run build
+   `npm install`
 
-# build for production and view the bundle analyzer report
-npm run build --report
+2. 运行`项目根目录`下的文件`bms.sql`
 
-# run unit tests
-npm run unit
+   该文件中创建了用户`bmsAdmin`，默认密码为`dbFinalProject`
 
-# run e2e tests
-npm run e2e
+   再次运行该文件时，需要注释掉：
 
-# run all tests
-npm test
-```
+   ```sql
+   CREATE USER 'bmsAdmin'@'localhost' IDENTIFIED BY 'dbFinalProject';
+   GRANT ALL ON bms.* TO 'bmsAdmin'@'localhost';
+   ```
 
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+3. 启动
+
+   * 启动客户端（端口`8080`）
+     * `项目根目录`下执行命令`npm run dev`
+   * 启动服务端（端口`3000`）
+     * 在`vue-bms\server`目录下执行命令`node index`
+
+4. 浏览器打开`http://localhost:8080/`
+
+   * 登陆
+     * 账号：`admin`
+     * 密码：`123456`

@@ -18,6 +18,7 @@ router.get('/getBooks', function (req, res, next) {
   if (params.bookName) {
     conn.query(sqlQueryBook, ['%' + params.bookName + '%'], function (err, result) {
       // console.log(err)
+      // console.log(result)
       res.json(result)
     })
   } else {
@@ -30,25 +31,17 @@ router.get('/getBooks', function (req, res, next) {
 
 router.post('/sale', function (req, res, next) {
   var sqlViewReportory = $sql.viewReportory
-  var sqlSaleBook = $sql.saleBook
-  var sqlInsertSaleRecord = $sql.insertSaleRecord
+  var callSaleBook =$sql.callSaleBook
   var params = req.body
   // 查看库存是否足够
   conn.query(sqlViewReportory, [params.bookId, params.count], function (err, result) {
     if (!err) {
       if (result.length) {
-        // 插入一条销售记录
-        conn.query(sqlInsertSaleRecord, [params.bookId, new Date(), params.count, params.customerName, params.saleAmount], function (err, result) {
-          if (!err) {
-            // 卖出一本，修改库存
-            conn.query(sqlSaleBook, [params.count, params.bookId], function (err, result) {
-              if (!err) {
-                res.json(result)
-              }
-            })
-          } else {
-            res.json({status: false, message: '发生错误，请重试'})
-          }
+        // 插入一条销售记录、更新库存信息
+        var date = new Date()
+        date.setHours(date.getHours() + 8)
+        conn.query(callSaleBook, [params.bookId, params.count, date, params.customerName, params.saleAmount], function(err, result){
+          res.json(result)
         })
       } else {
         res.json({status: false, message: '库存不足'})
@@ -61,24 +54,18 @@ router.post('/sale', function (req, res, next) {
 
 router.post('/return', function (req, res, next) {
   var sqlQuerySaleRecord = $sql.querySaleRecord
-  var sqlInsertReturnRecord = $sql.insertReturnRecord
-  var sqlSaleBook = $sql.saleBook
+  var callReturnBook = $sql.callReturnBook
   var params = req.body
   // console.log(params)
   // 查看该用户是否可以退书
   conn.query(sqlQuerySaleRecord, [params.bookId, params.customerName, params.bookId, params.customerName], function (err, result) {
     if (!err) {
       if (result[0][0].saleTotalCount - result[1][0].returnTotalCount >= params.count) {
-        // 插入一条退货记录
-        conn.query(sqlInsertReturnRecord, [params.bookId, new Date(), params.count, params.customerName, params.returnAmount], function (err, result) {
-          if (!err) {
-            // 退货一本书，修改库存
-            conn.query(sqlSaleBook, [0 - params.count, params.bookId], function (err, result) {
-              res.json(result)
-            })
-          } else {
-            res.json({status: false, message: '发生错误，请重试'})
-          }
+        // 插入一条退货记录、更新库存信息
+        var date = new Date()
+        date.setHours(date.getHours() + 8)
+        conn.query(callReturnBook, [params.bookId, params.count, date, params.customerName, params.returnAmount], function(err, result) {
+          res.json(result)
         })
       } else {
         res.json({status: false, message: '请输入正确的退货信息！'})
@@ -147,36 +134,12 @@ router.get('/getProviderInfo', function (req, res, next) {
 router.post('/purchase', function (req, res, next) {
   // console.log(req.body)
   var params = req.body
-  var queryIsOwnBook = $sql.queryIsOwnBook
-  var updateBookNum = $sql.updateBookNum
-  var purchaseBook = $sql.purchaseBook
-  var insertReportory = $sql.insertReportory
-  conn.query(purchaseBook, [params.providerId, params.bookId, new Date(params.purchaseTime), params.purchaseCount, params.purchaseAmount], function (err, result) {
+  var callPurchaseBook = $sql.callPurchaseBook
+  var date = new Date(params.purchaseTime)
+  date.setHours(date.getHours() + 8)
+  conn.query(callPurchaseBook, [params.providerId, params.bookId, date, params.purchaseCount, params.purchaseAmount], function(err, result) {
     if (!err) {
-      conn.query(queryIsOwnBook, [params.bookId], function (err, result) {
-        if (!err) {
-          if(result.length) {
-            var bookNum = result[0].count
-            conn.query(updateBookNum, [params.purchaseCount + bookNum, params.bookId], function (err, result) {
-                if (!err) {
-                  res.json({status: true, message: '购买成功，请给图书定价'})
-                } else {
-                  res.json({ status: false, message: '发生错误，请重试' })
-                }
-              })
-          } else {
-            conn.query(insertReportory, [params.bookId, 0, params.purchaseCount], function (err, result) {
-                if (!err) {
-                  res.json({status: true, message: '购买成功, 请给图书定价'})
-                } else {
-                  res.json({ status: false, message: '发生错误，请重试' })
-                }
-              })  
-          }        
-        } else {
-          res.json({ status: false, message: '发生错误，请重试' })
-        }
-      })
+      res.json({status: true, message: '购买成功, 请给图书定价'})
     } else {
       res.json({ status: false, message: '发生错误，请重试' })
     }

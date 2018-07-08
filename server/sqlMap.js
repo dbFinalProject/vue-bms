@@ -11,7 +11,7 @@ var sqlMap = {
   // 查询指定图书
   queryBook: 'select * \
               from reportory, book \
-              where reportory.bookId = book.bookId and and book.bookName like ?',
+              where reportory.bookId = book.bookId and book.bookName like ?',
   // 查看库存
   viewReportory: 'select * \
                   from reportory \
@@ -77,7 +77,11 @@ var sqlMap = {
   updateBookPrice: 'update reportory set price = ? \
                     where bookId = ?',
   // 插入仓库
-  insertReportory: 'insert reportory values(?, ?, ?)'
-}
+  insertReportory: 'insert reportory values(?, ?, ?)',
 
+  //
+  callSaleBook: 'call saleBook(?, ?, ?, ?, ?)',
+  callReturnBook: 'call returnBook(?, ?, ?, ?, ?)',
+  callPurchaseBook: 'call purchaseBook(?, ?, ?, ?, ?)'
+}
 module.exports = sqlMap
