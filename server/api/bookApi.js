@@ -77,7 +77,7 @@ router.post('/getStatistics', function (req, res, next) {
   var queryPurchaseTableByTime = $sql.queryPurchaseTableByTime
   var queryReturnRecordByTime = $sql.queryReturnRecordByTime
   var params = req.body
-  console.log(params)
+  // console.log(params)
 
   var data = {}
   // 销售情况

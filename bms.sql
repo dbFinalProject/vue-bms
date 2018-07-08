@@ -1,6 +1,7 @@
 CREATE USER 'bmsAdmin'@'localhost' IDENTIFIED BY 'dbFinalProject';
 GRANT ALL ON bms.* TO 'bmsAdmin'@'localhost';
 create database if not exists bms;
+SET time_zone = '+8:00';
 use bms; 
 
 drop table if exists returnTable;
