@@ -12,20 +12,9 @@
         width="180"
         align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.bookId }}</span>
+          <span>{{ scope.$index + 1 }}</span>
         </template>
       </el-table-column>
-
-      <el-table-column
-        label="出版日期"
-        width="250"
-        align="center">
-        <template slot-scope="scope">
-          <i class="el-icon-time"></i>
-          <span style="margin-left: 10px">{{ scope.row.bookDate ? scope.row.bookDate.slice(0, 10) : scope.row.bookDate }}</span>
-        </template>
-      </el-table-column>
-
       <el-table-column
         label="图书名称"
         width="250"
@@ -40,7 +29,15 @@
           </el-popover>
         </template>
       </el-table-column>
-
+      <el-table-column
+        label="出版日期"
+        width="250"
+        align="center">
+        <template slot-scope="scope">
+          <i class="el-icon-time"></i>
+          <span style="margin-left: 10px">{{ scope.row.bookDate ? scope.row.bookDate.slice(0, 10) : scope.row.bookDate }}</span>
+        </template>
+      </el-table-column>
       <el-table-column
         label="库存量"
         width="180"
@@ -112,14 +109,14 @@ export default {
     }
   },
   created () {
-    this.$http.get('/api/book/getReportory')
+    this.$http.get('/api/book/getBooks')
       .then((res) => {
         this.tableData = res.data
       })
   },
   methods: {
     handleSearchBook () {
-      this.$http.get('/api/book/getReportory?bookName=' + this.searchedBook)
+      this.$http.get('/api/book/getBooks?bookName=' + this.searchedBook)
         .then((res) => {
           this.tableData = res.data
         })
@@ -141,7 +138,7 @@ export default {
         price: that.form.price
       }).then((res) => {
         if (res.status === 200 && res.data.status !== false) {
-          that.$http.get('/api/book/getReportory')
+          that.$http.get('/api/book/getBooks')
             .then((res) => {
               that.tableData = res.data
               that.dialogFormVisible = false

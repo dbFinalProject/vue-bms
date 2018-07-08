@@ -2,9 +2,10 @@
 module.exports = {
     mysql: {
         host: 'localhost',
-        user: 'root',
-        password: '7home7Tmade',
+        user: 'bmsAdmin',
+        password: 'dbFinalProject',
         database: 'bms',
-        port: '3306'
+        port: '3306',
+        multipleStatements: true
     }
 }

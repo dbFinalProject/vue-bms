@@ -11,16 +11,7 @@
         width="180"
         align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.bookId }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="出版日期"
-        width="250"
-        align="center">
-        <template slot-scope="scope">
-          <i class="el-icon-time"></i>
-          <span style="margin-left: 10px">{{ scope.row.bookDate ? scope.row.bookDate.slice(0, 10) : scope.row.bookDate }}</span>
+          <span>{{ scope.$index + 1 }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -37,12 +28,13 @@
           </el-popover>
         </template>
       </el-table-column>
-      <el-table-column
-        label="库存量"
-        width="180"
+       <el-table-column
+        label="出版日期"
+        width="250"
         align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.count }}</span>
+          <i class="el-icon-time"></i>
+          <span style="margin-left: 10px">{{ scope.row.bookDate ? scope.row.bookDate.slice(0, 10) : scope.row.bookDate }}</span>
         </template>
       </el-table-column>
 

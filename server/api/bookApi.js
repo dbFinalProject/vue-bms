@@ -28,22 +28,6 @@ router.get('/getBooks', function (req, res, next) {
   }
 })
 
-router.get('/getReportory', function(req, res, next){
-  var queryReportoryBooks = $sql.queryReportoryBooks
-  var queryReportoryBook = $sql.queryReportoryBook
-
-  var params = querystring.parse(url.parse(req.url).query)
-  if (params.bookName) {
-    conn.query(queryReportoryBook, ['%' + params.bookName + '%'], function (err, result) {
-      res.json(result)
-    })
-  } else {
-    conn.query(queryReportoryBooks, function (err, result) {
-      res.json(result)
-    })
-  }
-})
-
 router.post('/sale', function (req, res, next) {
   var sqlViewReportory = $sql.viewReportory
   var sqlSaleBook = $sql.saleBook
@@ -81,11 +65,10 @@ router.post('/return', function (req, res, next) {
   var sqlSaleBook = $sql.saleBook
   var params = req.body
   // console.log(params)
-  // 查看是否有该用户的销售记录
-  conn.query(sqlQuerySaleRecord, [params.bookId, params.customerName, params.count, params.bookId, params.customerName], function (err, result) {
+  // 查看该用户是否可以退书
+  conn.query(sqlQuerySaleRecord, [params.bookId, params.customerName, params.bookId, params.customerName], function (err, result) {
     if (!err) {
-      
-      if (result.length) {
+      if (result[0][0].saleTotalCount - result[1][0].returnTotalCount >= params.count) {
         // 插入一条退货记录
         conn.query(sqlInsertReturnRecord, [params.bookId, new Date(), params.count, params.customerName, params.returnAmount], function (err, result) {
           if (!err) {
